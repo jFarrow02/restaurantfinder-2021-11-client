@@ -4,7 +4,8 @@
     grid-area: c;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    grid-template-rows: auto, auto, auto;
+    /* grid-template-rows: 50px 100px 100px; */
+    grid-auto-rows: 100px; /*implicit rows*/
 }
 
 .banner {
