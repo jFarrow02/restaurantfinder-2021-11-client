@@ -1,3 +1,4 @@
 .MainContent {
     background-color: darkred;
+    grid-column: 3 / -1;
 }
