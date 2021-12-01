@@ -2,4 +2,12 @@
     background-color: darkred;
     /* grid-column: 3 / -1; */
     grid-area: c;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-rows: auto, auto, auto;
+}
+
+.banner {
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
 }
