@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import './App.css';
 import { RestaurantInterface } from './models/RestaurantInterface';
 import RestaurantService from './services/restaurantService';
+import { Footer, Header, MainContent, Sidebar} from './components';
 
 function App() {
   const fetchRestaurant = async (): Promise<RestaurantInterface> => {
@@ -17,7 +18,10 @@ function App() {
 
   return (
     <div className="App">
-      HELLO FROM AN APP
+      <Header/>
+      <MainContent/>
+      <Sidebar/>
+      <Footer/>
     </div>
   );
 }
