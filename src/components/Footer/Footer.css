@@ -1,3 +1,4 @@
 .Footer {
     background-color: mediumblue;
+    grid-column: 1 / -1;
 }
