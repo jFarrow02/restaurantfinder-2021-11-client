@@ -1,6 +1,14 @@
+import { GradeInterface } from "../models/GradeInterface";
+
 const GradeService = {
 
-    getGradesByRestaurantId(restaurantId: string):void {},
+    async getGradesByRestaurantId(restaurantId: string): Promise<GradeInterface[]> {
+        return [];
+    },
+
+    async createGradeForRestaurant(restaurantId: string, grade: GradeInterface): Promise<GradeInterface> {
+        return grade;
+    },
 };
 
 export default GradeService;

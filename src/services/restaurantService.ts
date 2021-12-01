@@ -1,14 +1,41 @@
+import { RestaurantInterface } from "../models/RestaurantInterface";
+import config from '../config/env';
+import { HttpRequestInterface } from "../models/HttpRequestInterface";
+import requestHeaders from "../models/RequestHeaders";
+
 const RestaurantService = {
 
-    findAllRestaurants():void {},
+    async findAllRestaurants(): Promise<RestaurantInterface[]> {
+        return [];
+    },
 
-    findRestaurantsByBorough(borough: string): void {},
+    async findRestaurantsByBorough(borough: string): Promise<RestaurantInterface[]> {
+        return [];
+    },
 
-    findRestaurantByName(name: string): void {},
+    async findRestaurantByName(name: string) {
+        const result = await fetch(`${config.API_URL}/restaurants/find-one/name/${name}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'User-Agent': '',
+                    'Accept': '*/*',
+                    'Accept-Encoding': '',
+                    'Connection': 'keep-alive',
+                },
+            }
+        );
+        return result;   
+    },
 
-    findRestaurantsByCuisineType(type: string): void {},
+    async findRestaurantsByCuisineType(type: string): Promise<RestaurantInterface[]> {
+        return [];
+    },
 
-    findRestaurantsByAverageGrade(grade: string): void {},
+    async findRestaurantsByAverageGrade(grade: string): Promise<RestaurantInterface[]> {
+        return [];
+    },
 }
 
 export default RestaurantService;
