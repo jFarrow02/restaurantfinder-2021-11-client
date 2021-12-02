@@ -1,38 +1,15 @@
+import { ReactElement } from 'react';
 import './MainContent.css';
-import { Restaurant } from '..';
+import { BoroughSelector, AttributeSelector } from '..';
 
-export default () => {
+export default (): ReactElement => {
 
     return (
         <section className="MainContent">
             <div className="banner">MAIN CONTENT</div>
-            <>
-                <div className="vertical">
-                    <Restaurant/>
-                </div>
-                <Restaurant/>
-                <div className="horizontal">
-                    <Restaurant/>
-                </div>
-                <Restaurant/>
-                <Restaurant/>
-                <div className="horizontal">
-                    <Restaurant/>
-                </div>
-                <Restaurant/>
-                <div className="vertical">
-                    <Restaurant/>
-                </div>
-                <Restaurant/>
-                <Restaurant/>
-                <div className="horizontal">
-                    <Restaurant/>
-                </div>
-                <Restaurant/>
-                <Restaurant/>
-                <Restaurant/>
-                <Restaurant/>
-            </>
+            <BoroughSelector/>
+            <div className="divider">OR</div>
+            <AttributeSelector/>
         </section>
     )
 }

@@ -1,6 +1,7 @@
+import { ReactElement } from 'react';
 import './Footer.css';
 
-const Footer = () => {
+const Footer = ():ReactElement => {
 
     return (
         <section className="Footer">

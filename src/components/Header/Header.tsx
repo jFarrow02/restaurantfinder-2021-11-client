@@ -1,6 +1,7 @@
+import { ReactElement } from 'react';
 import './Header.css';
 
-const Header = () => {
+const Header = ():ReactElement => {
 
     return(
         <section className="Header">

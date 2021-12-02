@@ -14,4 +14,11 @@ export default {
         PATCH: 'PATCH',
         DELETE: 'DELETE',
     },
+    BOROUGHS: {
+        BROOKLYN: { displayName: 'Brooklyn', shortName: 'BKYLN' },
+        BRONX: { displayName: 'Bronx', shortName: 'BRONX' },
+        QUEENS: { displayName: 'Queens', shortName: 'QUEENS'},
+        MANHATTAN: { displayName: 'Manhattan', shortName: 'MNHTN'},
+        STATEN_ISLAND: { displayName: 'Staten Island', shortName: 'STNIL'},
+    }
 }

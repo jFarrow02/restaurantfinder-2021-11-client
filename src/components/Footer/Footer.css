@@ -1,5 +1,5 @@
 .Footer {
-    background-color: mediumblue;
+    border: 1px solid mediumblue;
     /* grid-column: 3 / -1; */
     grid-area: f;
 }

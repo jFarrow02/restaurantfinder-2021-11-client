@@ -1,0 +1,5 @@
+.AttributeSelector {
+    border: 1px dotted darkslategrey;
+    grid-column: 7 / -1;
+    grid-row: 2 / span 1;
+}
