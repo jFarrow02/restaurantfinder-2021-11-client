@@ -1,7 +1,6 @@
-import { ReactElement } from 'react';
 import './Header.css';
 
-const Header = ():ReactElement => {
+const Header = ():JSX.Element => {
 
     return(
         <section className="Header">

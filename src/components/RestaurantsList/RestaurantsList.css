@@ -1,0 +1,5 @@
+.RestaurantsList {
+    border: 1px dotted springgreen;
+    grid-row: 3 / span 1;
+    grid-column: 1 / -1;
+}

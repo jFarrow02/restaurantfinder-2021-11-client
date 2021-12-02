@@ -1,25 +1,30 @@
-import { ReactElement, useState } from 'react';
+import { useState } from 'react';
 import './MainContent.css';
-import { BoroughSelector, AttributeSelector } from '..';
+import { BoroughSelector, AttributeSelector, RestaurantsList } from '..';
 
-export default (): ReactElement => {
+export default (): JSX.Element => {
 
-    const [ selectedBorough, setSelectedBorough] = useState('');
-    const [ fetchedRestaurants, setFetchedRestaurants ] = useState(null);
+    // const [ selectedSearchValue, setSelectedSearchValue ] = useState('');
+    const [ fetchedRestaurants, setFetchedRestaurants ] = useState([]);
+    const [ searchParam, setSearchParam ] = useState('');
 
-    const fetchRestaurantsByBorough = (boroughName: string, restaurants: any) => {
-        setSelectedBorough(boroughName);
+    const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any) => {
+        setSearchParam(`${searchBy} = "${searchValue}"`);
+        // setSelectedSearchValue(searchValue);
         setFetchedRestaurants(restaurants);
     };
 
     return (
         <section className="MainContent">
-            <div className="banner">Current Borough: {selectedBorough}</div>
             <BoroughSelector
-                fetchRestaurantsByBorough={fetchRestaurantsByBorough}
+                fetchRestaurantsByBorough={fetchRestaurantsBySearchParam}
             />
             <div className="divider">OR</div>
             <AttributeSelector/>
+            <RestaurantsList
+                restaurantsList={fetchedRestaurants}
+                searchParam={searchParam}
+            />
         </section>
     )
 }

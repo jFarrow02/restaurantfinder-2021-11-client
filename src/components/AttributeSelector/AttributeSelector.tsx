@@ -1,7 +1,6 @@
-import { ReactElement } from 'react';
 import './AttributeSelector.css';
 
-const AttributeSelector = ():ReactElement => {
+const AttributeSelector = ():JSX.Element => {
 
     return(
         <section className="AttributeSelector">
