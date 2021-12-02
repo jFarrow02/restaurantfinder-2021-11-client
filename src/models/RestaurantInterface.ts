@@ -1,4 +1,4 @@
-export interface RestaurantInterface {
+export default interface RestaurantInterface {
     building: string,
     street: string,
     latitude: number,

@@ -1,4 +1,4 @@
-import { GradeInterface } from "../models/GradeInterface";
+import GradeInterface from "../models/GradeInterface";
 
 const GradeService = {
 

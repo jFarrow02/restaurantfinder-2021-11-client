@@ -1,40 +1,60 @@
-import { RestaurantInterface } from "../models/RestaurantInterface";
+import RestaurantInterface from "../models/RestaurantInterface";
 import config from '../config/env';
-import { HttpRequestInterface } from "../models/HttpRequestInterface";
-import requestHeaders from "../models/RequestHeaders";
+import HttpUtilsService from "./httpUtilsService";
+import ErrorResponseInterface from "../models/ErrorResponseInterface";
 
 const RestaurantService = {
 
-    async findAllRestaurants(): Promise<RestaurantInterface[]> {
-        return [];
-    },
-
-    async findRestaurantsByBorough(borough: string): Promise<RestaurantInterface[]> {
-        return [];
-    },
-
-    async findRestaurantByName(name: string) {
-        const result = await fetch(`${config.API_URL}/restaurants/find-one/name/${name}`,
+    async findAllRestaurants(): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+        const results = await fetch(`${config.API_URL}/restaurants/find-all`,
             {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'User-Agent': '',
-                    'Accept': '*/*',
-                    'Accept-Encoding': '',
-                    'Connection': 'keep-alive',
-                },
+                method: config.HTTP_METHODS.GET,
+                headers: { ...config.HEADERS_DEFAULT },
             }
         );
-        return result;   
+
+        return HttpUtilsService.parseFetchResponse(results);
     },
 
-    async findRestaurantsByCuisineType(type: string): Promise<RestaurantInterface[]> {
-        return [];
+    async findRestaurantsByBorough(borough: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+        const results = await fetch(`${config.API_URL}/restaurants/find-many/borough/${borough}`,
+            {
+                method: config.HTTP_METHODS.GET,
+                headers: { ...config.HEADERS_DEFAULT},
+            }
+        );
+        return HttpUtilsService.parseFetchResponse(results);
     },
 
-    async findRestaurantsByAverageGrade(grade: string): Promise<RestaurantInterface[]> {
-        return [];
+    async findRestaurantByName(name: string): Promise<RestaurantInterface | ErrorResponseInterface> {
+        const result = await fetch(`${config.API_URL}/restaurants/find-one/name/${name}`,
+            {
+                method: config.HTTP_METHODS.GET,
+                headers: { ...config.HEADERS_DEFAULT },
+            }
+        );
+
+        return HttpUtilsService.parseFetchResponse(result);   
+    },
+
+    async findRestaurantsByCuisineType(type: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+        const results = await fetch(`${config.API_URL}/restaurants/find-many/cuisine/${type}`,
+            {
+                method: config.HTTP_METHODS.GET,
+                headers: { ...config.HEADERS_DEFAULT },
+            }
+        );
+        return HttpUtilsService.parseFetchResponse(results);
+    },
+
+    async findRestaurantsByAverageGrade(grade: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+        const results = await fetch(`${config.API_URL}/restaurants/find-many/avg-grade/${grade}`,
+            {
+                method: config.HTTP_METHODS.GET,
+                headers: { ...config.HEADERS_DEFAULT },
+            }
+        );
+        return HttpUtilsService.parseFetchResponse(results);
     },
 }
 

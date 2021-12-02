@@ -1,4 +1,4 @@
-export interface GradeInterface {
+export default interface GradeInterface {
     gradeDate: number,
     grade: string,
     score: number,
