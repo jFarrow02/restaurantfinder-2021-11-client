@@ -1,11 +1,12 @@
-import { ReactElement } from 'react';
 import './Sidebar.css';
 
-export default ():ReactElement => {
+const Sidebar = ():JSX.Element => {
 
     return (
         <section className="Sidebar">
             SIDEBAR
         </section>
     )
-}
+};
+
+export default Sidebar;

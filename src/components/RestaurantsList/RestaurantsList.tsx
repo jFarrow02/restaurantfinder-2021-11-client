@@ -5,6 +5,7 @@ import RestaurantInterface from '../../models/RestaurantInterface';
 interface RestaurantListProps {
     restaurantsList: RestaurantInterface[],
     searchParam: string,
+    totalResultCount: number,
 };
 
 const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
@@ -12,7 +13,7 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
 
     return(
         <section className="RestaurantsList">
-            <h3>Showing results # - # for {props.searchParam}</h3>
+            <h3>Showing results # - # of {props.totalResultCount} for {props.searchParam}</h3>
         </section>
     );
 };
