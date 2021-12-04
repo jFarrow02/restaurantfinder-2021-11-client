@@ -4,7 +4,7 @@ import { BoroughSelector, AttributeSelector, RestaurantsList, Pagination } from 
 import RestaurantInterface from '../../models/RestaurantInterface';
 import config from '../../config/env';
 
-const { ALPHABET } = config;
+const { ALPHABET, RESULTS_PER_PAGE } = config;
 
 const MainContent = (): JSX.Element => {
     let r: RestaurantInterface[] = [];
@@ -13,11 +13,12 @@ const MainContent = (): JSX.Element => {
     const [ paginatedRestaurants, setPaginatedRestaurants ] = useState(r);
     const [ searchParam, setSearchParam ] = useState('');
     const [ currentPage, setCurrentPage ] = useState('a');
+    const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(0);
     const [ totalResultCount, setTotalResultCount ] = useState(0);
 
-    const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any) => {
+    const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any):void => {
         const specialCharNames:RestaurantInterface[] = restaurants.filter((r:RestaurantInterface) => {
             return ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1; 
         }).sort((a:RestaurantInterface, b:RestaurantInterface) => {
@@ -55,17 +56,45 @@ const MainContent = (): JSX.Element => {
         setCurrentEndIndex(paginatedRestaurants.length);
     };
 
-    const filterRestaurantsByCurrentPage = (currentPage:string):void => {
-        setCurrentPage(currentPage);
-        const paginatedRestaurants = fetchedRestaurants.filter((r:RestaurantInterface) => {
-            return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
-                r.name.substring(0, 1).toLowerCase() === currentPage;
-        });
-        setCurrentStartIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + 1);
-        setCurrentEndIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + paginatedRestaurants.length);
-        setPaginatedRestaurants(paginatedRestaurants);
-    };
+    // const filterRestaurantsByCurrentPage = (currentPage:string, currentPageNumber:number):void => {
+    //     setCurrentPage(currentPage);
+
+    //     /**TODO: 12/03/2021 21:36 EST Use currentPageNumber to calculate numbered paginated results */
+    //     const paginatedRestaurants = fetchedRestaurants.filter((r:RestaurantInterface) => {
+    //         return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
+    //             r.name.substring(0, 1).toLowerCase() === currentPage;
+    //     });
+    //     setCurrentStartIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + 1);
+    //     setCurrentEndIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + paginatedRestaurants.length);
+    //     setPaginatedRestaurants(paginatedRestaurants);
+    // };
+
+    // const filterRestaurantsByCurrentPage = (currentPage:string, currentPageNumber:number):void => {
+    //     setCurrentPage(currentPage);
+    //     setCurrentPageNumber(currentPageNumber);
+
+    //     // const allRestaurantsForCurrentPage = fetchedRestaurants.filter((r:RestaurantInterface) => {
+    //     //     return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
+    //     //         r.name.substring(0, 1).toLowerCase() === currentPage;
+    //     // });
+    //     // let paginatedRestaurants:RestaurantInterface[] = [];
+
+    //     // if(currentPageNumber < 1) {
+    //     //     throw new Error('page number should not be < 1');
+    //     // }
+    //     // paginatedRestaurants =  currentPageNumber > 1 ? [] : allRestaurantsForCurrentPage.slice((RESULTS_PER_PAGE * currentPageNumber) -1, RESULTS_PER_PAGE + 1);   // currentPageNumber > 1
+    //     // allRestaurantsForCurrentPage.slice(0, RESULTS_PER_PAGE + 1); // currentPageNumber === 1
+        
+    //     setCurrentStartIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + 1);
+    //     setCurrentEndIndex((fetchedRestaurants.indexOf(paginatedRestaurants[0])) + RESULTS_PER_PAGE);
+    //     setPaginatedRestaurants([]);
+    // };
     
+    const filterRestaurantsByCurrentPage = (currentPage:string, currentPageNumber:number) => {
+        setCurrentPage(currentPage);
+        setCurrentPageNumber(currentPageNumber);// restart paginated results at page number 1 when selecting new ABC results
+    };
+
     return (
         <section className="MainContent">
             Current Page: {currentPage}
@@ -76,6 +105,8 @@ const MainContent = (): JSX.Element => {
             <AttributeSelector/>
             <Pagination
                 paginateRestaurants={filterRestaurantsByCurrentPage}
+                paginatedResultCount={paginatedRestaurants.length}
+                currentPage={currentPage}
             />
             <RestaurantsList
                 restaurantsList={paginatedRestaurants}

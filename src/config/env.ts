@@ -29,10 +29,13 @@ const ALPHABET: string[] = [
     'v', 'w', 'x', 'y', 'z', 'special'
 ];
 
+const RESULTS_PER_PAGE :number = 20;
+
 export default {
     API_URL: 'http://localhost:8093/restaurantfinder',
     HEADERS_DEFAULT,
     HTTP_METHODS,
     BOROUGHS,
     ALPHABET,
+    RESULTS_PER_PAGE,
 }

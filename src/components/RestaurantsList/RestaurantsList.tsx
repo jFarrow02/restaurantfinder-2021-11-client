@@ -10,7 +10,6 @@ interface RestaurantListProps {
 };
 
 const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
-
     const {
         currentEndIndex,
         currentStartIndex,
