@@ -19,7 +19,8 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
     return(
         <section className="RestaurantsList">
             {
-                totalResultCount > 0 ? <h3>Showing results {currentStartIndex} - {currentEndIndex} of {props.totalResultCount} for {props.searchParam}</h3> : ''
+                totalResultCount > 0 ? <h3>Showing results # - # of {props.totalResultCount} for {props.searchParam}</h3> : ''
+                // totalResultCount > 0 ? <h3>Showing results {currentStartIndex} - {currentEndIndex} of {props.totalResultCount} for {props.searchParam}</h3> : ''
             }
         </section>
     );

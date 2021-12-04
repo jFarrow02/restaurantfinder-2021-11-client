@@ -16,6 +16,7 @@ const MainContent = (): JSX.Element => {
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(0);
+    const [ resultByPageCount, setResultByPageCount ] = useState(0);
     const [ totalResultCount, setTotalResultCount ] = useState(0);
 
     const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any):void => {
@@ -49,7 +50,7 @@ const MainContent = (): JSX.Element => {
         const paginatedRestaurants = restaurants.filter((r:RestaurantInterface) => {
             return r.name.substring(0, 1).toLowerCase() === currentPage;
         });
-
+        
         setPaginatedRestaurants(paginatedRestaurants.slice(0, RESULTS_PER_PAGE));
         setTotalResultCount(restaurants.length);
         setCurrentStartIndex(1);
@@ -99,7 +100,8 @@ const MainContent = (): JSX.Element => {
                 r.name.substring(0, 1).toLowerCase() === currentPage;
         });
 
-        const paginatedForCurrentPage = allRestaurantsForCurrentPage.slice(0, RESULTS_PER_PAGE + 1);
+        const paginatedForCurrentPage = currentPageNumber > 1 ? allRestaurantsForCurrentPage.slice((currentPageNumber * RESULTS_PER_PAGE) - 1, ((currentPageNumber * RESULTS_PER_PAGE) - 1) + RESULTS_PER_PAGE):  // currentPageNumber > 1
+            allRestaurantsForCurrentPage.slice(0, RESULTS_PER_PAGE ); // currentPageNumber === 1
 
 
         setPaginatedRestaurants(paginatedForCurrentPage);
