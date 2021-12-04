@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './RestaurantsList.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
 
@@ -6,14 +5,23 @@ interface RestaurantListProps {
     restaurantsList: RestaurantInterface[],
     searchParam: string,
     totalResultCount: number,
+    currentStartIndex: number,
+    currentEndIndex: number,
 };
 
 const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
-    const [ searchResultsMessage, setSearchResultsMessage ] = useState('');
+
+    const {
+        currentEndIndex,
+        currentStartIndex,
+        totalResultCount,
+    } = props;
 
     return(
         <section className="RestaurantsList">
-            <h3>Showing results # - # of {props.totalResultCount} for {props.searchParam}</h3>
+            {
+                totalResultCount > 0 ? <h3>Showing results {currentStartIndex} - {currentEndIndex} of {props.totalResultCount} for {props.searchParam}</h3> : ''
+            }
         </section>
     );
 };
