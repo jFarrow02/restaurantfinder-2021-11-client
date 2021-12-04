@@ -116,17 +116,15 @@ const MainContent = (): JSX.Element => {
             <div className="divider">OR</div>
             <AttributeSelector/>
             <Pagination
-                paginateRestaurants={filterRestaurantsByCurrentPage}
-                paginatedResultCount={paginatedRestaurants.length}
-                currentPage={currentPage}
+                restaurantsList={fetchedRestaurants}
             />
-            <RestaurantsList
+            {/* <RestaurantsList
                 restaurantsList={paginatedRestaurants}
                 searchParam={searchParam}
                 totalResultCount={totalResultCount}
                 currentEndIndex={currentEndIndex}
                 currentStartIndex={currentStartIndex}
-            />
+            /> */}
         </section>
     )
 };
