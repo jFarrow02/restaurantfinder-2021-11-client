@@ -50,7 +50,7 @@ const MainContent = (): JSX.Element => {
             return r.name.substring(0, 1).toLowerCase() === currentPage;
         });
 
-        setPaginatedRestaurants(paginatedRestaurants);
+        setPaginatedRestaurants(paginatedRestaurants.slice(0, RESULTS_PER_PAGE));
         setTotalResultCount(restaurants.length);
         setCurrentStartIndex(1);
         setCurrentEndIndex(paginatedRestaurants.length);
@@ -93,6 +93,16 @@ const MainContent = (): JSX.Element => {
     const filterRestaurantsByCurrentPage = (currentPage:string, currentPageNumber:number) => {
         setCurrentPage(currentPage);
         setCurrentPageNumber(currentPageNumber);// restart paginated results at page number 1 when selecting new ABC results
+    
+        const allRestaurantsForCurrentPage = fetchedRestaurants.filter((r:RestaurantInterface) => {
+            return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
+                r.name.substring(0, 1).toLowerCase() === currentPage;
+        });
+
+        const paginatedForCurrentPage = allRestaurantsForCurrentPage.slice(0, RESULTS_PER_PAGE + 1);
+
+
+        setPaginatedRestaurants(paginatedForCurrentPage);
     };
 
     return (
