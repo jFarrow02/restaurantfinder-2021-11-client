@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Pagination.css';
 import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
@@ -14,6 +14,11 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     const [ currentResultsByPageLength, setCurrentResultsByPageLength ] = useState(0);
     const [ totalResultsLength, setTotalResultsLength ] = useState(0);
 
+    useEffect(() => {
+        setCurrentResultsByPageLength(props.restaurantsList.filter((r:RestaurantInterface) => {
+            return r.name.substring(0, 1).toLowerCase() === 'a';
+        }).length);
+    }, [props.restaurantsList]);
 
     const { ALPHABET, RESULTS_PER_PAGE } = config;
     const {
@@ -31,9 +36,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     };
 
     const paginateResults = (currentPageNumber:number):void => {
-        setCurrentPageNumber(currentPageNumber);
-
-        
+        setCurrentPageNumber(currentPageNumber);  
     }
 
     const links = ALPHABET.map((char, idx) => {
@@ -47,7 +50,8 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
         );
     });
 
-    const numbers: JSX.Element[] = [];
+    const numbers: JSX.Element[] = []; 
+
     for(let i = 0; i < Math.ceil(currentResultsByPageLength / RESULTS_PER_PAGE); i+= 1) {
         numbers.push(
         <button 
@@ -60,8 +64,8 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     return(
         <section className="Pagination">
-            {links}
-            {numbers}
+            {restaurantsList.length > 0 && links}
+            {restaurantsList.length > 0 && numbers}
         </section>
     )
 };
