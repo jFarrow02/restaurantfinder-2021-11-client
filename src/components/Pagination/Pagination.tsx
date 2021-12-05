@@ -25,67 +25,50 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
             return r.name.substring(0, 1).toLowerCase() === 'a';
         }).length);
         setTotalResultsLength(restaurantsList.length);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, 'a', 1));
+        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, 'a'));
     }, [props.restaurantsList]);
 
     const {
         restaurantsList
     } = props;
 
-    // const getCurrentResultsByPage = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
-    //     return results.filter((r:RestaurantInterface) => {
-    //         return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
-    //             r.name.substring(0, 1).toLowerCase() === currentPage;
-    //     });
-    // };
-
-    const getCurrentResultsByPage = (results:RestaurantInterface[], currentPage:string, currentPageNumber:number):RestaurantInterface[] => {
+    const getCurrentResultsByPage = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
         return results.filter((r:RestaurantInterface) => {
             return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
                 r.name.substring(0, 1).toLowerCase() === currentPage;
-        }).slice(((currentPageNumber - 1) * RESULTS_PER_PAGE), (((currentPageNumber - 1) * RESULTS_PER_PAGE) + RESULTS_PER_PAGE));
-
+        });
     };
 
-    const calculateCurrentStartIndex = (currentPage:string, currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
-        /**
-         * currentPageResults[{}, {}, {}...]
-         * if currentPage === 1
-         * currentStart = start at 0 indexed item
-         * currentEnd = RESULTS_PER_PAGE
-         * 
-         * if currentPage === 2
-         * currentStart = (currentPage - 1) * RESULTS_PER_PAGE
-         * */ 
-        // const currentStart = restaurantsList.indexOf(currentResultsByPage[0]) + 1;
-        // const firstPaginatedItem = paginatedResults[0];
-        const firstPaginatedItem = currentPageNumber === 1 ? paginatedResults[0] : 
-            paginatedResults[(((currentPageNumber - 1) * RESULTS_PER_PAGE)) - 1];
-        return restaurantsList.indexOf(firstPaginatedItem);
+    const getCurrentResultsByPageAndNumber = (resultsByPage:RestaurantInterface[], currentPageNumber:number) => {
+        return resultsByPage.slice(((currentPageNumber - 1) * RESULTS_PER_PAGE), (((currentPageNumber - 1) * RESULTS_PER_PAGE) + RESULTS_PER_PAGE));
+    }
+
+    const calculateCurrentStartIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
+        const firstPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[0];
+       return restaurantsList.indexOf(firstPaginatedItem);
         
     };
 
-    const calculateCurrentEndIndex = ():number => {
-        return -1;
-    }
+    const calculateCurrentEndIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
+        const lastPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[((currentPageNumber -1) * RESULTS_PER_PAGE) - 1];
+        return restaurantsList.indexOf(lastPaginatedItem);
+    };
+
     const selectPage = (page:string):void => {
-        const currentResultsByPage = getCurrentResultsByPage(restaurantsList, page, 1);
+        const currentResultsByPage = getCurrentResultsByPage(restaurantsList, page);
         setCurrentResultsByPageLength(currentResultsByPage.length);
         setCurrentPage(page);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, page, 1));
+        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, page));
         setCurrentPageNumber(1);
-        setCurrentStartIndex(0);
-        // setCurrentEndIndex(restaurantsList.indexOf(currentResultsByPage[currentResultsByPage.length - 1]));
-        
+        setCurrentStartIndex(calculateCurrentStartIndex(1, getCurrentResultsByPage(restaurantsList, page)));
     };
 
     const paginateResults = (currentPageNumber:number):void => {
-        // const currentResultsByPage = getCurrentResultsByPage(restaurantsList);
         setCurrentPageNumber(currentPageNumber);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, currentPage, currentPageNumber));
-        setCurrentStartIndex(calculateCurrentStartIndex(currentPage, currentPageNumber, getCurrentResultsByPage(restaurantsList, currentPage, currentPageNumber)));
-        // setCurrentEndIndex(restaurantsList.indexOf(currentResultsByPage[currentResultsByPage.length - 1]));
-    }
+        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, currentPage));
+        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, getCurrentResultsByPage(restaurantsList, currentPage)));
+        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, getCurrentResultsByPageAndNumber(restaurantsList, currentPageNumber)));
+    };
 
     const links = ALPHABET.map((char, idx) => {
         return(
@@ -112,7 +95,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     return(
         <section className="Pagination">
-            <h4>Showing results {'#'} - {'#'} of {totalResultsLength}</h4>
+            <h4>Showing results {currentStartIndex} through {currentEndIndex} of {totalResultsLength}</h4>
             {restaurantsList.length > 0 && links}
             {restaurantsList.length > 0 && numbers}
             {/* {
