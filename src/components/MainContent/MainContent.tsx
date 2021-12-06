@@ -48,7 +48,9 @@ const MainContent = (): JSX.Element => {
                 fetchRestaurantsByBorough={fetchRestaurantsBySearchParam}
             />
             <div className="divider">OR</div>
-            <AttributeSelector/>
+            <AttributeSelector
+                fetchRestaurantsBySearchParam={fetchRestaurantsBySearchParam}
+            />
             <Pagination
                 restaurantsList={fetchedRestaurants}
             />

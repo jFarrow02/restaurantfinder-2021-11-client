@@ -31,6 +31,12 @@ const ALPHABET: string[] = [
 
 const RESULTS_PER_PAGE :number = 20;
 
+const SEARCH_PARAMS = [
+    { value: 'cuisine', displayName: 'Cuisine', inputType: 'select' },
+    { value: 'name', displayName: 'Name', inputType: 'input' },
+    { value: 'avg_grade', displayName: 'Average Grade', inputType: 'select' },
+    { value: 'zip', displayName: 'Zipcode', inputType: 'select' },
+];
 export default {
     API_URL: 'http://localhost:8093/restaurantfinder',
     HEADERS_DEFAULT,
@@ -38,4 +44,5 @@ export default {
     BOROUGHS,
     ALPHABET,
     RESULTS_PER_PAGE,
+    SEARCH_PARAMS,
 }

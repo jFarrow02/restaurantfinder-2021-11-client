@@ -50,7 +50,8 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     };
 
     const calculateCurrentEndIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
-        const lastPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[((currentPageNumber -1) * RESULTS_PER_PAGE) - 1];
+        const pageAndNumber = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber);
+        const lastPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[pageAndNumber.length - 1];
         return restaurantsList.indexOf(lastPaginatedItem);
     };
 
@@ -60,14 +61,16 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
         setCurrentPage(page);
         setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, page));
         setCurrentPageNumber(1);
-        setCurrentStartIndex(calculateCurrentStartIndex(1, getCurrentResultsByPage(restaurantsList, page)));
+        setCurrentStartIndex(calculateCurrentStartIndex(1, currentResultsByPage));
+        setCurrentEndIndex(calculateCurrentEndIndex(1, currentResultsByPage));
     };
 
     const paginateResults = (currentPageNumber:number):void => {
+        const currentResultsByPage = getCurrentResultsByPage(restaurantsList, currentPage);
         setCurrentPageNumber(currentPageNumber);
         setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, currentPage));
-        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, getCurrentResultsByPage(restaurantsList, currentPage)));
-        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, getCurrentResultsByPageAndNumber(restaurantsList, currentPageNumber)));
+        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, currentResultsByPage));
+        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPage));
     };
 
     const links = ALPHABET.map((char, idx) => {
@@ -95,7 +98,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     return(
         <section className="Pagination">
-            <h4>Showing results {currentStartIndex} through {currentEndIndex} of {totalResultsLength}</h4>
+            {restaurantsList.length > 0 && <h4>Showing results {currentStartIndex + 1} through {currentEndIndex + 1} of {totalResultsLength}</h4>}
             {restaurantsList.length > 0 && links}
             {restaurantsList.length > 0 && numbers}
             {/* {
