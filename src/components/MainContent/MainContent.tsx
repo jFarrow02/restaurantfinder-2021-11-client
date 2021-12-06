@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './MainContent.css';
-import { BoroughSelector, AttributeSelector, RestaurantsList, Pagination } from '..';
+import { BoroughSelector, AttributeSelector, Pagination } from '..';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import config from '../../config/env';
 

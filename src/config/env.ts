@@ -37,6 +37,9 @@ const SEARCH_PARAMS = [
     { value: 'avg_grade', displayName: 'Average Grade', inputType: 'select' },
     { value: 'zip', displayName: 'Zipcode', inputType: 'select' },
 ];
+
+const AVG_GRADES = ['a', 'b', 'c', 'd', 'f'];
+
 export default {
     API_URL: 'http://localhost:8093/restaurantfinder',
     HEADERS_DEFAULT,
@@ -45,4 +48,5 @@ export default {
     ALPHABET,
     RESULTS_PER_PAGE,
     SEARCH_PARAMS,
+    AVG_GRADES,
 }
