@@ -5,10 +5,10 @@ function App():JSX.Element {
   
   return (
     <div className="App">
-      <Header/>
-      <Sidebar/>
-      <MainContent/>
-      <Footer/>
+        <Header/>
+        <Sidebar/>
+        <MainContent/>
+        <Footer/>
     </div>
   );
 }

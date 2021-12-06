@@ -12,6 +12,7 @@ const {
 const CuisineService = {
 
     getCuisineTypes: async ():Promise<CuisineTypeInterface[]> => {
+        
         const result = await fetch(`${API_URL}/cuisine-types/find-all`, 
             {
                 method: HTTP_METHODS.GET,
