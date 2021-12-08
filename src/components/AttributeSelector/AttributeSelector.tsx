@@ -37,8 +37,12 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
     const [ zipcodesList, setZipcodesList ] = useState(initialZipcodesList);
     // const [ foundRestaurants, setFoundRestaurants ] = useState(initialFoundRestaurants);
 
-    const searchParamSelect = useRef();
-    const searchParamInput = useRef();
+    const refList: {[key:string]: any} = {
+        cuisine: useRef<HTMLSelectElement>(null),
+        avg_grade: useRef<HTMLSelectElement>(null),
+        zip: useRef<HTMLSelectElement>(null),
+        name: useRef<HTMLInputElement>(null),
+    };
 
     const {
         fetchRestaurantsBySearchParam // (searchBy: string, searchValue: string, restaurants: any)
@@ -63,7 +67,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
 
     const fetchZipcodes = async() => {
         try {
-            const zipcodes:ZipcodeInterface[] | ErrorResponseInterface = await ZipcodeService.fetchAllZipcodes();
+            const zipcodes:ZipcodeInterface[] = await ZipcodeService.fetchAllZipcodes();
             setZipcodesList(zipcodes);
             const copy = { ...attributeFetchResults };
             copy.fetchResults[SEARCH_PARAMS[3].value] = { status: true };
@@ -83,26 +87,32 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
        }
     };
 
-    const handleSearchParamChange = ($e:any, param:string):void => {
-        console.log('e:', $e.target);
-       
+    const handleSearchParamChange = (param:string):void => {
         setCurrentSearchParam(param);
         let currentVal;
         switch(param){
             case 'cuisine':
                 currentVal = cuisineTypesList[0].cuisineType;
+                // @ts-ignore
+                refList['cuisine'].current.selectedIndex = 0;
                 break;
             case 'avg_grade':
                 currentVal = 'a';
+                refList['avg_grade'].current.selectedIndex = 0;
                 break;
             case 'zip':
                 currentVal = zipcodesList[0].zip;
+                refList['zip'].current.selectedIndex = 0;
                 break;
             case 'name':
+                currentVal = '';
+                refList['name'].current.value = '';
+                break;
             default:
                 currentVal = '';
         }
-        setCurrentSearchValue($e?.target?.value);
+        setCurrentSearchValue(currentVal);
+        
     };
 
     useEffect(() => {
@@ -131,7 +141,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
                 disabled={!attributeFetchResults.fetchResults[param.value].status}
                 checked={param.value === currentSearchParam}
                 value={param.value}
-                onChange={(e) => handleSearchParamChange(e, param.value)}
+                onChange={() => handleSearchParamChange(param.value)}
                 />
                 {param.displayName}
                 {
@@ -139,6 +149,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
                         <select
                             className={param.value === currentSearchParam ? 'show' : 'hide'}
                             onChange={(e) => {setCurrentSearchValue(e.target.value)}}
+                            ref={refList[param.value]}
                         >
                             {param.value === 'cuisine' ? cuisineTypesOptions : []}
                             {param.value === 'avg_grade' ? avgGradeOptions : []}
