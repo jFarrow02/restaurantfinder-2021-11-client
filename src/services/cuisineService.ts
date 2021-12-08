@@ -19,7 +19,7 @@ const CuisineService = {
                 headers: HEADERS_DEFAULT,
             }
         );
-       return await HttpUtilsService.parseFetchResponse(result);
+       return await HttpUtilsService.handleFetchResponse(result);
     }
 };
 

@@ -1,5 +1,5 @@
 import './App.css';
-import { Footer, Header, MainContent, Sidebar, ErrorBoundary} from './components';
+import { Footer, Header, MainContent, Sidebar} from './components';
 
 function App():JSX.Element {
   

@@ -2,10 +2,16 @@ import ErrorResponseInterface from "../models/ErrorResponseInterface";
 
 const HttpUtilsService = {
 
-    parseFetchResponse: async (fetchResponse:Response ) => {
-        if(!fetchResponse.ok) {
-            const error:ErrorResponseInterface = await fetchResponse.json();
-            return error;
+    handleFetchResponse: async (fetchResponse:Response ) => {
+        if(!fetchResponse.ok){
+            const errorJson = await fetchResponse.json();
+            const err:ErrorResponseInterface = {
+                error: errorJson.error,
+                status: errorJson.status,
+                timestamp: errorJson.timestamp,
+                errorType: errorJson.message,
+            };
+            throw new Error(JSON.stringify(err));
         }
         return await fetchResponse.json();
     }

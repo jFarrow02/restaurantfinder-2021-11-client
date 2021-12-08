@@ -7,9 +7,13 @@ const BoroughSelector = (props: any):JSX.Element => {
     const { BOROUGHS } = config;
 
     const fetchRestaurants = async(borough: string) => {
-        const restaurants = await RestaurantService.findRestaurantsByBorough(borough);
-        props.fetchRestaurantsByBorough('borough', borough, restaurants);
-    }
+        try {
+            const restaurants = await RestaurantService.findRestaurantsByBorough(borough);
+            props.fetchRestaurantsByBorough('borough', borough, restaurants);
+        } catch(err) {
+            console.log(err);
+        }
+    };
     
     let boroughCards: {displayName: string, shortName: string }[] = [];
     
