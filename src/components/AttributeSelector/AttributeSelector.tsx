@@ -10,9 +10,6 @@ interface AttributeSelectorPropsInterface {
     fetchRestaurantsBySearchParam: Function,
 }
 
-interface AttributeFetchResultsInterface {
-    fetchResults: {[key: string]: {[key: string] : boolean } }
-}
 const { SEARCH_PARAMS, AVG_GRADES } = config;
 
 const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element => {
@@ -27,7 +24,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
     };
     const initialZipcodesList: ZipcodeInterface[] = [];
 
-    const [ currentSearchParam, setCurrentSearchParam ] = useState(SEARCH_PARAMS[0].value);
+    const [ currentSearchParam, setCurrentSearchParam ] = useState('');
     const [ currentSearchValue, setCurrentSearchValue ] = useState('');
     const [ cuisineTypesList, setCuisineTypesList ] = useState(initialCuisineTypeList);
     const [ attributeFetchResults, setAttributeFetchResults ] = useState(initialAttributeFetchResults);
@@ -57,12 +54,11 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
             }
             setCuisineTypesList(cuisineTypes);
             setZipcodesList(zipCodes);
-            //setCurrentSearchValue(cuisineTypes[0].cuisineType);
             copy.cuisine = { success: true };
             copy.zip = { success: true };
             setAttributeFetchResults(copy);
-        } catch(err) {
-            console.log('err:', err);
+        } catch(err:any) { // TODO: Create custom error to throw here
+            console.log('err:', err.message);
             if(!cuisineTypes){
                 copy.cuisine = { success: false };
             }
@@ -105,11 +101,6 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
         return optionsList;
     };
 
-    const logInputValue = (val:any) => {
-        console.log('logInputValue val:', val);
-        console.log('currentSearchValue', currentSearchValue);
-        setCurrentSearchValue(val);
-    }
     const attributeSelectors = SEARCH_PARAMS.map((paramObject, idx) => {
         let optionsList = buildOptionsList(paramObject.value);
         return attributeFetchResults[paramObject.value].success ? (
@@ -118,8 +109,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
                 name='restaurant-search'
                 label={paramObject.displayName}
                 onRadioValueChange={setCurrentSearchParam}
-                onInputValueChange={logInputValue}
-                // onInputValueChange={setCurrentSearchValue}
+                onInputValueChange={setCurrentSearchValue}
                 inputType={paramObject.inputType}
                 optionsList={optionsList}
                 radioValue={paramObject.value}

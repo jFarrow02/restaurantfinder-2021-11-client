@@ -51,7 +51,6 @@ const AttributeSelectorInput = (props:AttributeSelectorInputPropsInterface):JSX.
     const [ currentInputValue, setCurrentInputValue ] = useState('');
 
     const setCurrentValue = (value:string):void => {
-        // console.log('value:', value);
         setCurrentInputValue(value);
         onInputValueChange(value);
     };
@@ -64,7 +63,6 @@ const AttributeSelectorInput = (props:AttributeSelectorInputPropsInterface):JSX.
         switch(inputType){
             case 'select':
                 // @ts-ignore
-                // val = radioValue === 'avg_grade' ? props.optionsList[0] : props.optionsList[0].value;
                 switch(radioValue) {
                     case 'avg_grade':
                         // @ts-ignore
@@ -106,7 +104,6 @@ const AttributeSelectorInput = (props:AttributeSelectorInputPropsInterface):JSX.
         <input
             type='text'
             onChange={(e) => {(setCurrentValue(e.target.value));}}
-            // onChange={(e) => {onInputValueChange(e.target.value)}}
             disabled={currentSearchParam !== radioValue}
         />
     );
@@ -119,7 +116,6 @@ const AttributeSelectorInput = (props:AttributeSelectorInputPropsInterface):JSX.
                 name={name}
                 onChange={() => {setCurrentSearchParam()}}
                 value={radioValue}
-                checked={currentSearchParam === radioValue}
             />
             {input}
         </div>
