@@ -7,6 +7,7 @@ import BoroughSelector from "./BoroughSelector";
 import AttributeSelector from "./AttributeSelector";
 import RestaurantsList from "./RestaurantsList";
 import Pagination from "./Pagination";
+import AttributeSelectorInput from "./AttributeSelectorInput";
 
 export {
     Footer,
@@ -18,4 +19,5 @@ export {
     AttributeSelector,
     RestaurantsList,
     Pagination,
+    AttributeSelectorInput,
 };

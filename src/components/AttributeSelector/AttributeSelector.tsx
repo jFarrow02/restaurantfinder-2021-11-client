@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import './AttributeSelector.css';
 import { CuisineService, ZipcodeService, RestaurantService } from '../../services';
 import CuisineTypeInterface from '../../models/CuisineTypeInterface';
 import ZipcodeInterface from '../../models/ZipcodeInterface';
-import ErrorResponseInterface from '../../models/ErrorResponseInterface';
 import config from '../../config/env';
-import RestaurantInterface from '../../models/RestaurantInterface';
+import { AttributeSelectorInput } from '../index';
 
 interface AttributeSelectorPropsInterface {
     fetchRestaurantsBySearchParam: Function,
@@ -19,16 +18,14 @@ const { SEARCH_PARAMS, AVG_GRADES } = config;
 const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element => {
 
     const initialCuisineTypeList: CuisineTypeInterface[] = [];
-    const initialAttributeFetchResults: AttributeFetchResultsInterface = {
-        fetchResults: {
-            [SEARCH_PARAMS[0].value]: { status: false },
-            [SEARCH_PARAMS[1].value]: { status: true },
-            [SEARCH_PARAMS[2].value]: { status: true },
-            [SEARCH_PARAMS[3].value]: { status: false },
-        }
+    
+    const initialAttributeFetchResults:{[key: string]: {[key: string] : boolean }} = {
+            cuisine: { success: false },
+            name: { success: true },
+            avg_grade: { success: true },
+            zip: { success: false }
     };
     const initialZipcodesList: ZipcodeInterface[] = [];
-    // const initialFoundRestaurants: RestaurantInterface | RestaurantInterface[] | ErrorResponseInterface = [];
 
     const [ currentSearchParam, setCurrentSearchParam ] = useState(SEARCH_PARAMS[0].value);
     const [ currentSearchValue, setCurrentSearchValue ] = useState('');
@@ -37,45 +34,44 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
     const [ zipcodesList, setZipcodesList ] = useState(initialZipcodesList);
     // const [ foundRestaurants, setFoundRestaurants ] = useState(initialFoundRestaurants);
 
-    const refList: {[key:string]: any} = {
-        cuisine: useRef<HTMLSelectElement>(null),
-        avg_grade: useRef<HTMLSelectElement>(null),
-        zip: useRef<HTMLSelectElement>(null),
-        name: useRef<HTMLInputElement>(null),
-    };
 
     const {
         fetchRestaurantsBySearchParam // (searchBy: string, searchValue: string, restaurants: any)
     } = props;
 
-    const fetchCuisineTypes = async() => {
-        try {
-            const cuisineTypes = await CuisineService.getCuisineTypes();
+    const fetchSearchParameters = async():Promise<void> => {
+        const copy = { ...attributeFetchResults };
+        let cuisineTypes;
+        let zipCodes;
+        let errorMessage = '';
+        try{
+            cuisineTypes = await CuisineService.getCuisineTypes();
+            zipCodes = await ZipcodeService.fetchAllZipcodes();
+            if(cuisineTypes.length < 1) {
+                errorMessage += 'Failed to fetch cuisine types ';
+            } else if(zipCodes.length < 1) {
+                errorMessage += 'Failed to fetch zipcodes';
+            }
+            if(errorMessage.length > 0){
+                throw new Error(errorMessage);
+            }
             setCuisineTypesList(cuisineTypes);
+            setZipcodesList(zipCodes);
             setCurrentSearchValue(cuisineTypes[0].cuisineType);
-            const copy = { ...attributeFetchResults };
-            copy.fetchResults[SEARCH_PARAMS[0].value] = { status: true };
-            setAttributeFetchResults(copy);
-        } catch (err) {
-            /**
-             * TODO: 12/6/2021 14:21 EST
-             * COME UP WITH BETTER ERROR HANDLING FOR API CALL ERRORS
-             */
-            console.log('err:', err);
-        }
-    };
-
-    const fetchZipcodes = async() => {
-        try {
-            const zipcodes:ZipcodeInterface[] = await ZipcodeService.fetchAllZipcodes();
-            setZipcodesList(zipcodes);
-            const copy = { ...attributeFetchResults };
-            copy.fetchResults[SEARCH_PARAMS[3].value] = { status: true };
+            copy.cuisine = { success: true };
+            copy.zip = { success: true };
             setAttributeFetchResults(copy);
         } catch(err) {
             console.log('err:', err);
+            if(!cuisineTypes){
+                copy.cuisine = { success: false };
+            }
+            if(!zipCodes) {
+                copy.zip = { success: false };
+            }
+            setAttributeFetchResults(copy);
         }
-    };
+    }
 
     const fetchRestaurantsByParamAndValue = async () => {
        try {
@@ -87,89 +83,58 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
        }
     };
 
-    const handleSearchParamChange = (param:string):void => {
-        setCurrentSearchParam(param);
-        let currentVal;
-        switch(param){
+    useEffect(() => {
+        fetchSearchParameters();
+    }, [attributeFetchResults]);
+
+    const buildOptionsList = (searchParameter:string):any[] => {
+        let optionsList: any[] = [];
+        switch(searchParameter) {
             case 'cuisine':
-                currentVal = cuisineTypesList[0].cuisineType;
-                // @ts-ignore
-                refList['cuisine'].current.selectedIndex = 0;
+                optionsList = cuisineTypesList;
                 break;
             case 'avg_grade':
-                currentVal = 'a';
-                refList['avg_grade'].current.selectedIndex = 0;
+                optionsList = AVG_GRADES;
                 break;
             case 'zip':
-                currentVal = zipcodesList[0].zip;
-                refList['zip'].current.selectedIndex = 0;
-                break;
-            case 'name':
-                currentVal = '';
-                refList['name'].current.value = '';
+                optionsList = zipcodesList;
                 break;
             default:
-                currentVal = '';
+                optionsList = [];
         }
-        setCurrentSearchValue(currentVal);
-        
+        return optionsList;
     };
 
-    useEffect(() => {
-        fetchCuisineTypes();
-        fetchZipcodes();
-    }, []);
-
-    const cuisineTypesOptions = cuisineTypesList.map((type, idx) => {
-        return <option key={`cuisine-option-${idx}`} value={type.cuisineType}>{type.cuisineType}</option>
-    });
-
-    const avgGradeOptions = AVG_GRADES.map((grade, idx) => {
-        return <option key={`avg-grade-option-${idx}`} value={grade}>{grade.toUpperCase()}</option>
-    });
-
-    const zipcodeOptions = zipcodesList.map((zip, idx) => {
-        return <option key={`zipcode-option-${idx}`} value={zip.zip}>{zip.zip}</option>
-    });
-
-    const radioButtons = SEARCH_PARAMS.map((param, idx) => {
-        const element = attributeFetchResults.fetchResults[param.value].status ? (
-            <div className="AttributeSelector" key={`attr-selector-${idx}`}>
-                <input
+    const logInputValue = (val:any) => {
+        console.log('logInputValue val:', val);
+        setCurrentSearchValue(val);
+    }
+    const attributeSelectors = SEARCH_PARAMS.map((paramObject, idx) => {
+        let optionsList = buildOptionsList(paramObject.value);
+        return attributeFetchResults[paramObject.value].success ? (
+            <AttributeSelectorInput
+                key={`attribute-selector-input-${idx}`}
                 name='restaurant-search'
-                type='radio'
-                disabled={!attributeFetchResults.fetchResults[param.value].status}
-                checked={param.value === currentSearchParam}
-                value={param.value}
-                onChange={() => handleSearchParamChange(param.value)}
-                />
-                {param.displayName}
-                {
-                    param.inputType === 'select' ? (
-                        <select
-                            className={param.value === currentSearchParam ? 'show' : 'hide'}
-                            onChange={(e) => {setCurrentSearchValue(e.target.value)}}
-                            ref={refList[param.value]}
-                        >
-                            {param.value === 'cuisine' ? cuisineTypesOptions : []}
-                            {param.value === 'avg_grade' ? avgGradeOptions : []}
-                            {param.value === 'zip' ? zipcodeOptions : []}
-                        </select>) : (
-                        <input
-                            className={param.value === currentSearchParam ? 'show' : 'hide'}
-                            onChange={(e) => {setCurrentSearchValue(e.target.value)}}
-                        />
-                    )
-                }
-            </div>
-        ) : <div className='AttributeSelector' key={`attr-selector-${idx}`}><span>Unavailable</span></div>;
-        return element;
+                label={paramObject.displayName}
+                onRadioValueChange={setCurrentSearchParam}
+                onInputValueChange={logInputValue}
+                inputType={paramObject.inputType}
+                optionsList={optionsList}
+                radioValue={paramObject.value}
+                currentSearchParam={currentSearchParam}
+            />
+        ) : (<div key={`attribute-selector-error-${idx}`}>Unavailable</div>)
     });
-
+    
     return(
         <section className="AttributeSelector">
-            {radioButtons}
-            <button onClick={()=>{fetchRestaurantsByParamAndValue()}}>Search Restaurants</button>
+            {attributeSelectors}
+            <button
+                onClick={()=>{fetchRestaurantsByParamAndValue()}}
+                disabled={currentSearchParam.length < 1 || currentSearchValue.length < 1}
+            >
+                Search Restaurants
+            </button>
         </section>
     );
 };
