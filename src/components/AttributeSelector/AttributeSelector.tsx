@@ -57,7 +57,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
             }
             setCuisineTypesList(cuisineTypes);
             setZipcodesList(zipCodes);
-            setCurrentSearchValue(cuisineTypes[0].cuisineType);
+            //setCurrentSearchValue(cuisineTypes[0].cuisineType);
             copy.cuisine = { success: true };
             copy.zip = { success: true };
             setAttributeFetchResults(copy);
@@ -107,6 +107,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
 
     const logInputValue = (val:any) => {
         console.log('logInputValue val:', val);
+        console.log('currentSearchValue', currentSearchValue);
         setCurrentSearchValue(val);
     }
     const attributeSelectors = SEARCH_PARAMS.map((paramObject, idx) => {
@@ -118,6 +119,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
                 label={paramObject.displayName}
                 onRadioValueChange={setCurrentSearchParam}
                 onInputValueChange={logInputValue}
+                // onInputValueChange={setCurrentSearchValue}
                 inputType={paramObject.inputType}
                 optionsList={optionsList}
                 radioValue={paramObject.value}

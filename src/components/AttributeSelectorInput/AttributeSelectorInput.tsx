@@ -106,6 +106,7 @@ const AttributeSelectorInput = (props:AttributeSelectorInputPropsInterface):JSX.
         <input
             type='text'
             onChange={(e) => {(setCurrentValue(e.target.value));}}
+            // onChange={(e) => {onInputValueChange(e.target.value)}}
             disabled={currentSearchParam !== radioValue}
         />
     );
