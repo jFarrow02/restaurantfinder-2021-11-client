@@ -81,7 +81,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
 
     useEffect(() => {
         fetchSearchParameters();
-    }, [attributeFetchResults]);
+    }, []);
 
     const buildOptionsList = (searchParameter:string):any[] => {
         let optionsList: any[] = [];

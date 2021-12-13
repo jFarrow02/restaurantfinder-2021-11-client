@@ -16,9 +16,11 @@ const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
         name
     } = props.restaurant
     return (
-        <section className="RestaurantCard">
-            
-        </section>
+        <div className="RestaurantCard">
+            <h5>{name}</h5>
+            <p>{cuisine}</p>
+            <p>{borough}</p>
+        </div>
     );
 };
 

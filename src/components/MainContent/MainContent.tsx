@@ -3,6 +3,7 @@ import './MainContent.css';
 import { BoroughSelector, AttributeSelector, Pagination } from '..';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import config from '../../config/env';
+import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 
 const { ALPHABET } = config;
 
@@ -42,19 +43,32 @@ const MainContent = (): JSX.Element => {
     };
 
 
-    return (
-        <section className="MainContent">
+    const selectorGroup = (
+        <>
             <BoroughSelector
                 fetchRestaurantsByBorough={fetchRestaurantsBySearchParam}
             />
             <div className="divider">OR</div>
-                <AttributeSelector
-                    fetchRestaurantsBySearchParam={fetchRestaurantsBySearchParam}
-                />
-            <Pagination
-                restaurantsList={fetchedRestaurants}
+            <AttributeSelector
+                fetchRestaurantsBySearchParam={fetchRestaurantsBySearchParam}
             />
-        </section>
+        </>
+    );
+
+    return (
+        <BrowserRouter>
+            <section className="MainContent">
+            <Link to='/'>Home</Link>
+            <Link to='/restaurants'>Restaurants</Link>
+                <Routes>
+                    <Route path='/' element={selectorGroup}/>
+                    <Route path='restaurants' element={<Pagination restaurantsList={fetchedRestaurants}/>}/>
+                    <Route path='*' element={selectorGroup}/>
+                </Routes>
+                <Outlet/>
+            </section>
+        </BrowserRouter>
+        
     )
 };
 

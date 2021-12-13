@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './Pagination.css';
 import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
+import { RestaurantsList } from '../index';
 
 interface PaginationPropsInterface {
     restaurantsList: RestaurantInterface[],
@@ -100,17 +101,13 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
         <section className="Pagination">
             {restaurantsList.length > 0 && <h4>Showing results {currentStartIndex + 1} through {currentEndIndex + 1} of {totalResultsLength}</h4>}
             {restaurantsList.length > 0 && links}
-            {restaurantsList.length > 0 && numbers}
-            {/* {
-                restaurantsList.length > 0 &&
-                 <RestaurantsList
-                restaurantsList={paginatedRestaurants}
-                searchParam={searchParam}
-                totalResultCount={totalResultCount}
-                currentEndIndex={currentEndIndex}
-                currentStartIndex={currentStartIndex}
+            {currentResultsByPage.length > 0 && (
+                <RestaurantsList
+                    restaurantsList={currentResultsByPage.slice(currentStartIndex, currentEndIndex + 1)}
                 />
-            } */}
+            )}
+            {restaurantsList.length > 0 && numbers}
+            {restaurantsList.length < 1 && <h4>No restaurants found</h4>}
         </section>
     )
 };
