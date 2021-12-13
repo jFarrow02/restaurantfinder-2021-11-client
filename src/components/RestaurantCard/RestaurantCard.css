@@ -1,6 +1,4 @@
 .RestaurantCard {
-    /* height: 150px; */
-    background-color:mediumturquoise;
-    margin: 5px;
-    display: inline-block;
+    border:1px solid mediumturquoise;
+    display: block;
 }

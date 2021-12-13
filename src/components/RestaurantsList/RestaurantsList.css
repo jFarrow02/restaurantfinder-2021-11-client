@@ -6,10 +6,13 @@
     flex-direction: row;
 }
 
-.map, .restaurants {
-    width: 50%;
+.map {
+    width: 70%;
+    height: 700px;
 }
 
-.map {
-    border: 1px solid deeppink;
+.restaurants {
+    width: 30%;
+    height: 700px;
+    overflow-y: scroll;
 }

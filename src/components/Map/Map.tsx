@@ -20,7 +20,7 @@ const Map = (props: MapPropsInterface):JSX.Element => {
             lat: props.restaurantsList[Math.ceil(props.restaurantsList.length / 2)].latitude,
             lng: props.restaurantsList[Math.ceil(props.restaurantsList.length / 2)].longitude,
         },
-        zoom: 11,
+        zoom: 12,
         mapTypeId: 'roadmap',
     };
 
@@ -31,13 +31,41 @@ const Map = (props: MapPropsInterface):JSX.Element => {
 
             // Position markers for each restaurant
             for(let i = 0; i < props.restaurantsList.length; i++) {
+                const r = props.restaurantsList[i];
+                const infoLabel = new google.maps.InfoWindow(
+                    {
+                        content:
+                        `<div className='info-label'>
+                            <p>${r.name}</p>
+                            <p><i>${r.cuisine}</i></p>
+                            <p><i>${r.building} ${r.street} ${r.borough}, NY ${r.zipcode}</i></p>
+                        </div>`,
+                    }
+                )
                 const latLng = new google.maps.LatLng(props.restaurantsList[i].latitude, props.restaurantsList[i].longitude);
-                console.log(latLng);
-                new google.maps.Marker({position: latLng, map: map });
+                const marker = new google.maps.Marker(
+                    {
+                        position: latLng,
+                        map: map
+                    }
+                );
+                marker.addListener('mouseover', () => {
+                    infoLabel.open({
+                        anchor: marker,
+                        map,
+                        shouldFocus: false,
+                    });
+                });
+                marker.addListener('mouseout', () => {
+                    const timeout = setTimeout(() => {
+                        infoLabel.close();
+                        clearTimeout(timeout);
+                    }, 250);
+                });
             }
 
         } catch(err:any) {
-            console.log(err.message);
+            throw err;
         }
     };
 
