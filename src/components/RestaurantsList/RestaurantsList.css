@@ -2,4 +2,14 @@
     border: 1px dotted springgreen;
     grid-row: 4 / span 1;
     grid-column: 1 / -1;
+    display: flex;
+    flex-direction: row;
+}
+
+.map, .restaurants {
+    width: 50%;
+}
+
+.map {
+    border: 1px solid deeppink;
 }
