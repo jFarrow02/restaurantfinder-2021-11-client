@@ -8,6 +8,7 @@ import AttributeSelector from "./AttributeSelector";
 import RestaurantsList from "./RestaurantsList";
 import Pagination from "./Pagination";
 import AttributeSelectorInput from "./AttributeSelectorInput";
+import Map from "./Map";
 
 export {
     Footer,
@@ -20,4 +21,5 @@ export {
     RestaurantsList,
     Pagination,
     AttributeSelectorInput,
+    Map,
 };

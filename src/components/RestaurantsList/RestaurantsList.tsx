@@ -1,6 +1,6 @@
 import './RestaurantsList.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
-import { RestaurantCard } from '../index';
+import { RestaurantCard, Map } from '../index';
 
 interface RestaurantListProps {
     restaurantsList: RestaurantInterface[],
@@ -20,13 +20,20 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
 
     return(
         <section className="RestaurantsList">
-           {
-               restaurantsList.map((r, idx) => {
-                   return (
-                       <RestaurantCard key={`restaurant-card-${idx}`} restaurant={r}/>
-                   )
-               })
-           }
+            <div className='map'>
+                <Map
+                    restaurantsList={restaurantsList}
+                />
+            </div>
+            <div className='restaurants'>
+                {
+                    restaurantsList.map((r, idx) => {
+                        return (
+                            <RestaurantCard key={`restaurant-card-${idx}`} restaurant={r}/>
+                        );
+                    })
+                }
+            </div>
         </section>
     );
 };
