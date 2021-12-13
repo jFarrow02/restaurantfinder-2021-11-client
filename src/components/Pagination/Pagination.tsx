@@ -15,25 +15,25 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     const [ currentPage, setCurrentPage ] = useState('a');
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
-    const [ currentResultsByPage, setCurrentResultsByPage ] = useState(initialResultsByPage);
-    const [ currentResultsByPageLength, setCurrentResultsByPageLength ] = useState(0);
+    const [ currentResultsByPageLetter, setCurrentResultsByPageLetter ] = useState(initialResultsByPage);
+    const [ currentResultsByPageLetterLength, setCurrentResultsByPageLetterLength ] = useState(0);
     const [ totalResultsLength, setTotalResultsLength ] = useState(0);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
 
     useEffect(() => {
-        setCurrentResultsByPageLength(props.restaurantsList.filter((r:RestaurantInterface) => {
+        setCurrentResultsByPageLetterLength(props.restaurantsList.filter((r:RestaurantInterface) => {
             return r.name.substring(0, 1).toLowerCase() === 'a';
         }).length);
         setTotalResultsLength(restaurantsList.length);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, 'a'));
+        setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, 'a'));
     }, [props.restaurantsList]);
 
     const {
         restaurantsList
     } = props;
 
-    const getCurrentResultsByPage = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
+    const getCurrentResultsByPageLetter = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
         return results.filter((r:RestaurantInterface) => {
             return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
                 r.name.substring(0, 1).toLowerCase() === currentPage;
@@ -57,21 +57,21 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     };
 
     const selectPage = (page:string):void => {
-        const currentResultsByPage = getCurrentResultsByPage(restaurantsList, page);
-        setCurrentResultsByPageLength(currentResultsByPage.length);
+        const currentResultsByPageLetter = getCurrentResultsByPageLetter(restaurantsList, page);
+        setCurrentResultsByPageLetterLength(currentResultsByPageLetter.length);
         setCurrentPage(page);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, page));
+        setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, page));
         setCurrentPageNumber(1);
-        setCurrentStartIndex(calculateCurrentStartIndex(1, currentResultsByPage));
-        setCurrentEndIndex(calculateCurrentEndIndex(1, currentResultsByPage));
+        setCurrentStartIndex(calculateCurrentStartIndex(1, currentResultsByPageLetter));
+        setCurrentEndIndex(calculateCurrentEndIndex(1, currentResultsByPageLetter));
     };
 
     const paginateResults = (currentPageNumber:number):void => {
-        const currentResultsByPage = getCurrentResultsByPage(restaurantsList, currentPage);
+        const currentResultsByPageLetter = getCurrentResultsByPageLetter(restaurantsList, currentPage);
         setCurrentPageNumber(currentPageNumber);
-        setCurrentResultsByPage(getCurrentResultsByPage(restaurantsList, currentPage));
-        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, currentResultsByPage));
-        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPage));
+        setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, currentPage));
+        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, currentResultsByPageLetter));
+        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPageLetter));
     };
 
     const links = ALPHABET.map((char, idx) => {
@@ -87,7 +87,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     const numbers: JSX.Element[] = []; 
 
-    for(let i = 0; i < Math.ceil(currentResultsByPageLength / RESULTS_PER_PAGE); i+= 1) {
+    for(let i = 0; i < Math.ceil(currentResultsByPageLetterLength / RESULTS_PER_PAGE); i+= 1) {
         numbers.push(
         <button 
             key={`page-number-${i + 1}`}
@@ -101,9 +101,9 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
         <section className="Pagination">
             {restaurantsList.length > 0 && <h4>Showing results {currentStartIndex + 1} through {currentEndIndex + 1} of {totalResultsLength}</h4>}
             {restaurantsList.length > 0 && links}
-            {currentResultsByPage.length > 0 && (
+            {currentResultsByPageLetter.length > 0 && (
                 <RestaurantsList
-                    restaurantsList={currentResultsByPage.slice(currentStartIndex, currentEndIndex + 1)}
+                    restaurantsList={getCurrentResultsByPageAndNumber(currentResultsByPageLetter, currentPageNumber)}
                 />
             )}
             {restaurantsList.length > 0 && numbers}
