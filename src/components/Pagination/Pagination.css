@@ -2,3 +2,8 @@
     grid-row: 3 / span 1;
     grid-column: 1 / -1;
 }
+
+.current-page {
+    color: #efefef;
+    background-color: #000000;
+}

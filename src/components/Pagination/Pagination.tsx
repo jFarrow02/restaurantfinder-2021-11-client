@@ -10,28 +10,54 @@ interface PaginationPropsInterface {
 
 const { ALPHABET, RESULTS_PER_PAGE } = config;
 const initialResultsByPage:RestaurantInterface[] = [];
+const initialEmptyIndices:number[] = [];
 
 const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     const [ currentPage, setCurrentPage ] = useState('a');
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
+    const [ emptyResultsByIndex, setEmptyResultsByIndex ] = useState(initialEmptyIndices);
     const [ currentResultsByPageLetter, setCurrentResultsByPageLetter ] = useState(initialResultsByPage);
     const [ currentResultsByPageLetterLength, setCurrentResultsByPageLetterLength ] = useState(0);
     const [ totalResultsLength, setTotalResultsLength ] = useState(0);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
 
+    const {
+        restaurantsList
+    } = props;
+
     useEffect(() => {
-        setCurrentResultsByPageLetterLength(props.restaurantsList.filter((r:RestaurantInterface) => {
+        setCurrentResultsByPageLetterLength(restaurantsList.filter((r:RestaurantInterface) => {
             return r.name.substring(0, 1).toLowerCase() === 'a';
         }).length);
         setTotalResultsLength(restaurantsList.length);
         setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, 'a'));
+        const restaurantsListCopy = [...restaurantsList];
+        const sortedRestaurantsByLetter: [RestaurantInterface[]] = [[]];
+        const emptyIndices: number[] = [];
+
+        ALPHABET.map((char, idx) => {
+            const byChars:RestaurantInterface[] = [];
+            const specialChars:RestaurantInterface[] = [];
+            restaurantsListCopy.forEach((r) => {
+                if(r.name.substring(0, 1).toLowerCase() !== 'special'){
+                    if(r.name.substring(0,1).toLowerCase() === char) {
+                        byChars.push(r);
+                    }
+                } else {
+                    specialChars.push(r);
+                }
+            });
+            sortedRestaurantsByLetter[idx] = idx < 26 ? byChars : specialChars;
+            if(sortedRestaurantsByLetter[idx].length === 0) {
+                emptyIndices.push(idx);
+            }
+            setEmptyResultsByIndex(emptyIndices);
+        });
     }, [props.restaurantsList]);
 
-    const {
-        restaurantsList
-    } = props;
+    
 
     const getCurrentResultsByPageLetter = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
         return results.filter((r:RestaurantInterface) => {
@@ -75,14 +101,15 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     };
 
     const links = ALPHABET.map((char, idx) => {
-        return(
+        return emptyResultsByIndex.indexOf(idx) === -1 ? (
             <button
                 key={`pagination-${idx}`}
+                className={char === currentPage ? 'current-page' : ''}
                 onClick={() => {selectPage(char)}}
             >
                 {char.toUpperCase()}
             </button>
-        );
+        ) : null;
     });
 
     const numbers: JSX.Element[] = []; 
@@ -91,6 +118,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
         numbers.push(
         <button 
             key={`page-number-${i + 1}`}
+            className={(i + 1) === currentPageNumber ? 'current-page' : ''}
             onClick={() => {paginateResults(i + 1)}}
         >
             {i + 1}

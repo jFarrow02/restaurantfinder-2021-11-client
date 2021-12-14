@@ -16,8 +16,8 @@ const Map = (props: MapPropsInterface):JSX.Element => {
 
     const mapOptions = {
         center: {
-            lat: props.restaurantsList[Math.ceil(props.restaurantsList.length / 2)].latitude,
-            lng: props.restaurantsList[Math.ceil(props.restaurantsList.length / 2)].longitude,
+            lat: props.restaurantsList[Math.floor(props.restaurantsList.length / 2)].latitude,
+            lng: props.restaurantsList[Math.floor(props.restaurantsList.length / 2)].longitude,
         },
         zoom: 12,
         mapTypeId: 'roadmap',
