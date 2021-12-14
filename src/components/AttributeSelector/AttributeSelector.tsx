@@ -5,6 +5,7 @@ import CuisineTypeInterface from '../../models/CuisineTypeInterface';
 import ZipcodeInterface from '../../models/ZipcodeInterface';
 import config from '../../config/env';
 import { AttributeSelectorInput } from '../index';
+import { useNavigate } from 'react-router-dom';
 
 interface AttributeSelectorPropsInterface {
     fetchRestaurantsBySearchParam: Function,
@@ -29,11 +30,11 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
     const [ cuisineTypesList, setCuisineTypesList ] = useState(initialCuisineTypeList);
     const [ attributeFetchResults, setAttributeFetchResults ] = useState(initialAttributeFetchResults);
     const [ zipcodesList, setZipcodesList ] = useState(initialZipcodesList);
-    // const [ foundRestaurants, setFoundRestaurants ] = useState(initialFoundRestaurants);
 
+    const navigate = useNavigate();
 
     const {
-        fetchRestaurantsBySearchParam // (searchBy: string, searchValue: string, restaurants: any)
+        fetchRestaurantsBySearchParam,
     } = props;
 
     const fetchSearchParameters = async():Promise<void> => {
@@ -70,13 +71,17 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
     }
 
     const fetchRestaurantsByParamAndValue = async () => {
-       try {
-           const restaurants = await RestaurantService.findRestaurantsByParamAndValue(currentSearchParam, currentSearchValue);
-           // console.log(restaurants); // OK
+        const nextRoute = '/restaurants';
+        try {
+            const restaurants = await RestaurantService.findRestaurantsByParamAndValue(currentSearchParam, currentSearchValue);
+            fetchRestaurantsBySearchParam(currentSearchParam, currentSearchValue, restaurants);
 
-       } catch(err) {
-           console.log('err:', err);
-       }
+        } catch(err:any) {
+            console.log('err:', err.message);
+            fetchRestaurantsBySearchParam(currentSearchParam, currentSearchValue, []);
+        }
+        
+        navigate(nextRoute);
     };
 
     useEffect(() => {

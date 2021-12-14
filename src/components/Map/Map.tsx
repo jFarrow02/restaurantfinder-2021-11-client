@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import './Map.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { Loader } from '@googlemaps/js-api-loader';
@@ -8,7 +8,6 @@ interface MapPropsInterface {
 }
 
 const Map = (props: MapPropsInterface):JSX.Element => {
-    const ref = useRef<HTMLDivElement>(null);
     const loader = new Loader(
         {
             apiKey: 'AIzaSyDsSzKbTxHePBhulyqZNaAlWMNbgoKeMd4',

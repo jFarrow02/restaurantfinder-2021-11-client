@@ -1,18 +1,26 @@
 import './BoroughSelector.css';
 import config from '../../config/env';
 import RestaurantService from '../../services/restaurantService';
+import { useNavigate } from 'react-router-dom';
 
 const BoroughSelector = (props: any):JSX.Element => {
 
     const { BOROUGHS } = config;
+    const {
+        fetchRestaurantsByBorough,
+    } = props;
+    const navigate = useNavigate();
 
     const fetchRestaurants = async(borough: string) => {
+        const searchParam = 'borough';
         try {
             const restaurants = await RestaurantService.findRestaurantsByBorough(borough);
-            props.fetchRestaurantsByBorough('borough', borough, restaurants);
+            fetchRestaurantsByBorough(searchParam , borough, restaurants);
         } catch(err) {
             console.log(err);
+            fetchRestaurantsByBorough(searchParam, borough, []);
         }
+        navigate('/restaurants');
     };
     
     let boroughCards: {displayName: string, shortName: string }[] = [];
