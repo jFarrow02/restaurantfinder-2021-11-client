@@ -4,15 +4,15 @@ import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { RestaurantsList } from '../index';
 
-interface PaginationPropsInterface {
-    restaurantsList: RestaurantInterface[],
-}
+// interface PaginationPropsInterface {
+//     restaurantsList: RestaurantInterface[],
+// }
 
 const { ALPHABET, RESULTS_PER_PAGE } = config;
 const initialResultsByPage:RestaurantInterface[] = [];
 const initialEmptyIndices:number[] = [];
 
-const Pagination = (props:PaginationPropsInterface):JSX.Element => {
+const Pagination = ():JSX.Element => {
 
     const [ currentPage, setCurrentPage ] = useState('a');
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
@@ -23,9 +23,9 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
 
-    const {
-        restaurantsList // TODO 2021-12-14 11:39 EST Set restaurantsList as STATE or GLOBAL STATE to preserve on page refresh
-    } = props;
+    const localStorage = window.localStorage.getItem('fetchedRestaurantsBySearchParam');
+    // @ts-ignore
+    const restaurantsList = JSON.parse(localStorage);
 
     useEffect(() => {
         setCurrentResultsByPageLetterLength(restaurantsList.filter((r:RestaurantInterface) => {
@@ -55,7 +55,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
             }
             setEmptyResultsByIndex(emptyIndices);
         });
-    }, [restaurantsList]);
+    }, [window.localStorage.getItem('fetchedRestaurantsBySearchParam')]);
 
     
 

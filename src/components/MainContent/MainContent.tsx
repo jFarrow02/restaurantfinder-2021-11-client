@@ -40,6 +40,9 @@ const MainContent = (): JSX.Element => {
         
         setSearchParam(`${searchBy} = "${searchValue}"`);
         setFetchedRestaurants(sortedCharNames);
+        window.localStorage.setItem('fetchedRestaurantsBySearchParam', JSON.stringify(sortedCharNames));
+        window.localStorage.removeItem('testList');
+        window.localStorage.removeItem('restaurantsList');
     };
 
 
@@ -62,7 +65,8 @@ const MainContent = (): JSX.Element => {
             <Link to='/restaurants'>Restaurants</Link>
                 <Routes>
                     <Route path='/' element={selectorGroup}/>
-                    <Route path='restaurants' element={<Pagination restaurantsList={fetchedRestaurants}/>}/>
+                    {/* <Route path='restaurants' element={<Pagination restaurantsList={fetchedRestaurants}/>}/> */}
+                    <Route path='restaurants' element={<Pagination/>}/>
                     <Route path='*' element={selectorGroup}/>
                 </Routes>
                 <Outlet/>
