@@ -1,4 +1,12 @@
 .RestaurantCard {
-    border:1px solid mediumturquoise;
     display: block;
+}
+
+.RestaurantCard:hover {
+    cursor: pointer;
+}
+
+.current {
+    background-color: mediumturquoise;
+    color: #ffffff;
 }

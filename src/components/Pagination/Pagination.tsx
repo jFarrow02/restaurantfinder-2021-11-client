@@ -24,7 +24,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
 
     const {
-        restaurantsList
+        restaurantsList // TODO 2021-12-14 11:39 EST Set restaurantsList as STATE or GLOBAL STATE to preserve on page refresh
     } = props;
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
             }
             setEmptyResultsByIndex(emptyIndices);
         });
-    }, [props.restaurantsList]);
+    }, [restaurantsList]);
 
     
 
@@ -132,6 +132,8 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
             {currentResultsByPageLetter.length > 0 && (
                 <RestaurantsList
                     restaurantsList={getCurrentResultsByPageAndNumber(currentResultsByPageLetter, currentPageNumber)}
+                    currentStartIndex={currentStartIndex}
+                    currentEndIndex={currentEndIndex}
                 />
             )}
             {restaurantsList.length > 0 && numbers}
