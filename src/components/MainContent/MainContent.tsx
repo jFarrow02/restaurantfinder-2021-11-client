@@ -14,6 +14,10 @@ const MainContent = (): JSX.Element => {
     const [ searchParam, setSearchParam ] = useState('');
 
     const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any):void => {
+        window.localStorage.removeItem('fetchedRestaurantsBySearchParam');
+        window.localStorage.removeItem('currentPage');
+        window.localStorage.removeItem('currentPageNumber');
+        
         const specialCharNames:RestaurantInterface[] = restaurants.filter((r:RestaurantInterface) => {
             return ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1; 
         }).sort((a:RestaurantInterface, b:RestaurantInterface) => {
@@ -41,8 +45,6 @@ const MainContent = (): JSX.Element => {
         setSearchParam(`${searchBy} = "${searchValue}"`);
         setFetchedRestaurants(sortedCharNames);
         window.localStorage.setItem('fetchedRestaurantsBySearchParam', JSON.stringify(sortedCharNames));
-        window.localStorage.removeItem('testList');
-        window.localStorage.removeItem('restaurantsList');
     };
 
 
@@ -65,7 +67,6 @@ const MainContent = (): JSX.Element => {
             <Link to='/restaurants'>Restaurants</Link>
                 <Routes>
                     <Route path='/' element={selectorGroup}/>
-                    {/* <Route path='restaurants' element={<Pagination restaurantsList={fetchedRestaurants}/>}/> */}
                     <Route path='restaurants' element={<Pagination/>}/>
                     <Route path='*' element={selectorGroup}/>
                 </Routes>

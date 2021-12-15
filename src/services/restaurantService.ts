@@ -71,8 +71,6 @@ const RestaurantService = {
 
     async findRestaurantsByParamAndValue(param:string, value:string):Promise<RestaurantInterface | RestaurantInterface[] | ErrorResponseInterface> {
         let results;
-        console.log('param:', param);
-        console.log('value:', value);
         switch(param){
             case 'cuisine':
                 results = await this.findRestaurantsByCuisineType(value);
@@ -89,7 +87,6 @@ const RestaurantService = {
             default:
                 results = [];
         }
-        console.log('RESULTS:', results);
         return results;
     }
 }
