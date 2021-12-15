@@ -7,7 +7,7 @@ const { HEADERS_DEFAULT, HTTP_METHODS, SEARCH_PARAMS } = config;
 
 const RestaurantService = {
 
-    async findAllRestaurants(): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+    async findAllRestaurants(): Promise<RestaurantInterface[]> {
         const results = await fetch(`${config.API_URL}/restaurants/find-all`,
             {
                 method: HTTP_METHODS.GET,
@@ -18,7 +18,7 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(results);
     },
 
-    async findRestaurantsByBorough(borough: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+    async findRestaurantsByBorough(borough: string): Promise<RestaurantInterface[]> {
         const results = await fetch(`${config.API_URL}/restaurants/find-many/borough/${borough}`,
             {
                 method: HTTP_METHODS.GET,
@@ -28,7 +28,7 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(results);
     },
 
-    async findRestaurantByName(name: string): Promise<RestaurantInterface | ErrorResponseInterface> {
+    async findRestaurantByName(name: string): Promise<RestaurantInterface> {
         const result = await fetch(`${config.API_URL}/restaurants/find-one/name/${name}`,
             {
                 method: HTTP_METHODS.GET,
@@ -39,7 +39,7 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(result);   
     },
 
-    async findRestaurantsByCuisineType(type: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+    async findRestaurantsByCuisineType(type: string): Promise<RestaurantInterface[]> {
         const results = await fetch(`${config.API_URL}/restaurants/find-many/cuisine/${type}`,
             {
                 method: HTTP_METHODS.GET,
@@ -49,7 +49,7 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(results);
     },
 
-    async findRestaurantsByAverageGrade(grade: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+    async findRestaurantsByAverageGrade(grade: string): Promise<RestaurantInterface[]> {
         const results = await fetch(`${config.API_URL}/restaurants/find-many/avg-grade/${grade}`,
             {
                 method: HTTP_METHODS.GET,
@@ -59,7 +59,7 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(results);
     },
 
-    async findRestaurantsByZipcode(zip: string): Promise<RestaurantInterface[] | ErrorResponseInterface> {
+    async findRestaurantsByZipcode(zip: string): Promise<RestaurantInterface[]> {
         const results = await fetch(`${config.API_URL}/restaurants/find-many/zipcode/${zip}`,
             {
                 method: HTTP_METHODS.GET,
@@ -69,10 +69,8 @@ const RestaurantService = {
         return HttpUtilsService.handleFetchResponse(results);
     },
 
-    async findRestaurantsByParamAndValue(param:string, value:string):Promise<RestaurantInterface | RestaurantInterface[] | ErrorResponseInterface> {
+    async findRestaurantsByParamAndValue(param:string, value:string):Promise<RestaurantInterface | RestaurantInterface[]> {
         let results;
-        console.log('param:', param);
-        console.log('value:', value);
         switch(param){
             case 'cuisine':
                 results = await this.findRestaurantsByCuisineType(value);
@@ -89,7 +87,6 @@ const RestaurantService = {
             default:
                 results = [];
         }
-        console.log('RESULTS:', results);
         return results;
     }
 }

@@ -3,6 +3,7 @@ import './Pagination.css';
 import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { RestaurantsList } from '../index';
+import { useAppSelector } from '../../store/hooks';
 
 interface PaginationPropsInterface {
     restaurantsList: RestaurantInterface[],
@@ -22,11 +23,14 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
     const [ totalResultsLength, setTotalResultsLength ] = useState(0);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
+    const [ testList, setTestList ] = useState('');
 
     const {
         restaurantsList // TODO 2021-12-14 11:39 EST Set restaurantsList as STATE or GLOBAL STATE to preserve on page refresh
     } = props;
 
+    const fullList = useAppSelector((state) => state.restaurantList.fullList);
+   
     useEffect(() => {
         setCurrentResultsByPageLetterLength(restaurantsList.filter((r:RestaurantInterface) => {
             return r.name.substring(0, 1).toLowerCase() === 'a';
@@ -54,9 +58,9 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
                 emptyIndices.push(idx);
             }
             setEmptyResultsByIndex(emptyIndices);
+            setTestList(JSON.stringify(restaurantsList));
         });
     }, [restaurantsList]);
-
     
 
     const getCurrentResultsByPageLetter = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {

@@ -2,6 +2,8 @@ import './BoroughSelector.css';
 import config from '../../config/env';
 import RestaurantService from '../../services/restaurantService';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import { setFullList } from '../../store/restaurantListSlice';
 
 const BoroughSelector = (props: any):JSX.Element => {
 
@@ -9,12 +11,17 @@ const BoroughSelector = (props: any):JSX.Element => {
     const {
         fetchRestaurantsByBorough,
     } = props;
+    
     const navigate = useNavigate();
+
+    const dispatch = useAppDispatch();
 
     const fetchRestaurants = async(borough: string) => {
         const searchParam = 'borough';
         try {
             const restaurants = await RestaurantService.findRestaurantsByBorough(borough);
+            // use hook(?)
+            dispatch(setFullList(restaurants))
             fetchRestaurantsByBorough(searchParam , borough, restaurants);
         } catch(err) {
             console.log(err);

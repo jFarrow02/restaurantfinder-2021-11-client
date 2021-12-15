@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './RestaurantsList.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { RestaurantCard, Map } from '../index';
+// import { useAppSelector } from '../../store/hooks';
 
 interface RestaurantListProps {
     restaurantsList: RestaurantInterface[],
@@ -11,6 +12,7 @@ interface RestaurantListProps {
 
 const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
     const initialIndices: number[] = [];
+    const initialRestaurants: RestaurantInterface[] = [];
 
     const [ currentRestaurantId, setCurrentRestaurantId ] = useState('');
     const [ indicesList, setIndicesList ] = useState(initialIndices);
@@ -20,6 +22,8 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
         currentEndIndex,
     } = props;
 
+    // const fullList = useAppSelector((state) => state.restaurantList.fullList);
+    
     useEffect(() => {
         const indices = [];
         for(let i = currentStartIndex; i < currentEndIndex + 1; i+= 1) {
