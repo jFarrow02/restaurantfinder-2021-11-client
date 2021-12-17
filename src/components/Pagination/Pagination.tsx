@@ -3,10 +3,18 @@ import './Pagination.css';
 import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { RestaurantsList } from '../index';
+import { PaginationService } from '../../services';
 
 const { ALPHABET, RESULTS_PER_PAGE } = config;
 const initialResultsByPage:RestaurantInterface[] = [];
 const initialEmptyIndices:number[] = [];
+
+const {
+    getCurrentResultsByPageLetter,
+    getCurrentResultsByPageAndNumber,
+    calculateCurrentStartIndex,
+    calculateCurrentEndIndex,
+} = PaginationService;
 
 const Pagination = ():JSX.Element => {
 
@@ -69,39 +77,14 @@ const Pagination = ():JSX.Element => {
             setEmptyResultsByIndex(emptyIndices);
         });
 
-        setCurrentStartIndex(calculateCurrentStartIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter)));
-        setCurrentEndIndex(calculateCurrentEndIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter)));
+        setCurrentStartIndex(calculateCurrentStartIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter), restaurantsList));
+        setCurrentEndIndex(calculateCurrentEndIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter), restaurantsList));
     }, [
             window.localStorage.getItem('fetchedRestaurantsBySearchParam'),
             window.localStorage.getItem('currentPage'),
             window.localStorage.getItem('currentPageNumber')
         ]
     );
-
-    
-
-    const getCurrentResultsByPageLetter = (results:RestaurantInterface[], currentPage:string):RestaurantInterface[] => {
-        return results.filter((r:RestaurantInterface) => {
-            return currentPage === 'special' ? ALPHABET.indexOf(r.name.substring(0, 1).toLowerCase()) === -1 :
-                r.name.substring(0, 1).toLowerCase() === currentPage;
-        });
-    };
-
-    const getCurrentResultsByPageAndNumber = (resultsByPage:RestaurantInterface[], currentPageNumber:number) => {
-        return resultsByPage.slice(((currentPageNumber - 1) * RESULTS_PER_PAGE), (((currentPageNumber - 1) * RESULTS_PER_PAGE) + RESULTS_PER_PAGE));
-    }
-
-    const calculateCurrentStartIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
-        const firstPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[0];
-       return restaurantsList.indexOf(firstPaginatedItem);
-        
-    };
-
-    const calculateCurrentEndIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
-        const pageAndNumber = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber);
-        const lastPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[pageAndNumber.length - 1];
-        return restaurantsList.indexOf(lastPaginatedItem);
-    };
 
     const selectPage = (page:string):void => {
         const currentResultsByPageLetter = getCurrentResultsByPageLetter(restaurantsList, page);
@@ -112,8 +95,8 @@ const Pagination = ():JSX.Element => {
 
         setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, page));
         setCurrentPageNumber(1);
-        setCurrentStartIndex(calculateCurrentStartIndex(1, currentResultsByPageLetter));
-        setCurrentEndIndex(calculateCurrentEndIndex(1, currentResultsByPageLetter));
+        setCurrentStartIndex(calculateCurrentStartIndex(1, currentResultsByPageLetter, restaurantsList));
+        setCurrentEndIndex(calculateCurrentEndIndex(1, currentResultsByPageLetter, restaurantsList));
     };
 
     const paginateResults = (currentPageNumber:number):void => {
@@ -123,8 +106,8 @@ const Pagination = ():JSX.Element => {
         window.localStorage.setItem('currentPageNumber', currentPageNumber.toString());
 
         setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, currentPage));
-        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, currentResultsByPageLetter));
-        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPageLetter));
+        setCurrentStartIndex(calculateCurrentStartIndex(currentPageNumber, currentResultsByPageLetter, restaurantsList));
+        setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPageLetter, restaurantsList));
     };
 
     const links = ALPHABET.map((char, idx) => {

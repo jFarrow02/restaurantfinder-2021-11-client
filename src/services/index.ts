@@ -3,6 +3,7 @@ import GradeService from "./gradeService";
 import RestaurantService from "./restaurantService";
 import HttpUtilsService from "./httpUtilsService";
 import ZipcodeService from "./zipcodeService";
+import PaginationService from "./paginationService";
 
 export {
     CuisineService,
@@ -10,4 +11,5 @@ export {
     RestaurantService,
     HttpUtilsService,
     ZipcodeService,
+    PaginationService,
 };
