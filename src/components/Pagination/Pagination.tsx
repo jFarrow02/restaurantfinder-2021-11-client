@@ -19,9 +19,9 @@ const Pagination = ():JSX.Element => {
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
     const [ currentEndIndex, setCurrentEndIndex ] = useState(RESULTS_PER_PAGE);
 
-    const localStorageRestaurantList = window.localStorage.getItem('fetchedRestaurantsBySearchParam');
-    const localStorageCurrentPage = window.localStorage.getItem('currentPage');
-    const localStorageCurrentPageNumber = window.localStorage.getItem('currentPageNumber');
+    let localStorageRestaurantList = window.localStorage.getItem('fetchedRestaurantsBySearchParam');
+    let localStorageCurrentPage = window.localStorage.getItem('currentPage');
+    let localStorageCurrentPageNumber = window.localStorage.getItem('currentPageNumber');
 
     // @ts-ignore
     const restaurantsList = JSON.parse(localStorageRestaurantList);
@@ -33,17 +33,18 @@ const Pagination = ():JSX.Element => {
         }).length);
         setTotalResultsLength(restaurantsList.length);
 
+        let pageLetter = localStorageCurrentPage ? localStorageCurrentPage : 'a';
+        let pageNumber = localStorageCurrentPageNumber ? Number.parseInt(localStorageCurrentPageNumber) : 1;
+
         if(!localStorageCurrentPage) {
-            setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, 'a'));
+            setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, pageLetter));
+            
         } else {
-            setCurrentPage(localStorageCurrentPage);
-            setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, localStorageCurrentPage));
+            setCurrentPage(pageLetter);
+            setCurrentResultsByPageLetter(getCurrentResultsByPageLetter(restaurantsList, pageLetter));
         }
 
-
-        if(localStorageCurrentPageNumber) {
-            setCurrentPageNumber(Number.parseInt(localStorageCurrentPageNumber));
-        };
+        setCurrentPageNumber(pageNumber);
 
         const restaurantsListCopy = [...restaurantsList];
         const sortedRestaurantsByLetter: [RestaurantInterface[]] = [[]];
@@ -67,6 +68,9 @@ const Pagination = ():JSX.Element => {
             }
             setEmptyResultsByIndex(emptyIndices);
         });
+
+        setCurrentStartIndex(calculateCurrentStartIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter)));
+        setCurrentEndIndex(calculateCurrentEndIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter)));
     }, [
             window.localStorage.getItem('fetchedRestaurantsBySearchParam'),
             window.localStorage.getItem('currentPage'),
@@ -87,9 +91,6 @@ const Pagination = ():JSX.Element => {
         return resultsByPage.slice(((currentPageNumber - 1) * RESULTS_PER_PAGE), (((currentPageNumber - 1) * RESULTS_PER_PAGE) + RESULTS_PER_PAGE));
     }
 
-    /**
-        TODO: 2021-12-15 Fix calculations for current start and current end indices
-     */
     const calculateCurrentStartIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[]):number => {
         const firstPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[0];
        return restaurantsList.indexOf(firstPaginatedItem);
