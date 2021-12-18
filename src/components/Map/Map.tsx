@@ -5,14 +5,14 @@ import { Loader } from '@googlemaps/js-api-loader';
 
 interface MapPropsInterface {
     restaurantsList: RestaurantInterface[],
-    setCurrentRestaurantId: Function,
-    indicesList: number[],
+    clickHandler: Function,
+    indicesList?: number[],
 }
 
 const Map = (props: MapPropsInterface):JSX.Element => {
     const {
         restaurantsList,
-        setCurrentRestaurantId,
+        clickHandler,
         indicesList,
     } = props;
 
@@ -41,12 +41,17 @@ const Map = (props: MapPropsInterface):JSX.Element => {
                 const r = restaurantsList[i];
                 const infoLabel = new google.maps.InfoWindow(
                     {
-                        content:
+                        content: indicesList ? 
                         `<div className='info-label'>
                             <p>${indicesList[i]}: ${r.name}</p>
                             <p><i>${r.cuisine}</i></p>
                             <p><i>${r.building} ${r.street} ${r.borough}, NY ${r.zipcode}</i></p>
-                        </div>`,
+                        </div>` : 
+                        `<div className='info-label>
+                            <p>${r.name}</p>
+                            <p><i>${r.cuisine}</i></p>
+                            <p><i>${r.building} ${r.street} ${r.borough}, NY ${r.zipcode}</i></p>
+                        </div>'`,
                     }
                 )
                 const latLng = new google.maps.LatLng(restaurantsList[i].latitude, restaurantsList[i].longitude);
@@ -57,7 +62,7 @@ const Map = (props: MapPropsInterface):JSX.Element => {
                     }
                 );
                 marker.addListener('click', () => {
-                    setCurrentRestaurantId(r.restaurantId);
+                    clickHandler(r.restaurantId);
                 });
 
                 marker.addListener('mouseover', () => {

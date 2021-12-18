@@ -17,16 +17,15 @@ const getCurrentResultsByPageAndNumber = (resultsByPage:RestaurantInterface[], c
     return resultsByPage.slice(((currentPageNumber - 1) * RESULTS_PER_PAGE), (((currentPageNumber - 1) * RESULTS_PER_PAGE) + RESULTS_PER_PAGE));
 };
 
-const calculateCurrentStartIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[], restaurantsList:RestaurantInterface[]):number => {
+const calculateCurrentStartIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[], restaurantsSupersetList:RestaurantInterface[]):number => {
     const firstPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[0];
-    console.log('firstPaginatedItem:', firstPaginatedItem);
-    return restaurantsList.indexOf(firstPaginatedItem);
+    return restaurantsSupersetList.indexOf(firstPaginatedItem);
 };
 
-const calculateCurrentEndIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[], restaurantsList:RestaurantInterface[]):number => {
+const calculateCurrentEndIndex = (currentPageNumber:number, paginatedResults:RestaurantInterface[], restaurantsSupersetList:RestaurantInterface[]):number => {
     const pageAndNumber = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber);
     const lastPaginatedItem = getCurrentResultsByPageAndNumber(paginatedResults, currentPageNumber)[pageAndNumber.length - 1];
-    return restaurantsList.indexOf(lastPaginatedItem);
+    return restaurantsSupersetList.indexOf(lastPaginatedItem);
 };
 
 export default {

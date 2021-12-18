@@ -6,6 +6,7 @@ interface RestaurantCardPropsInterface {
     currentRestaurantId: string,
     index: number,
     setCurrentRestaurantId: Function,
+    setShowRestaurantDetails: Function,
 }
 const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
 
@@ -14,6 +15,7 @@ const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
         currentRestaurantId,
         index,
         setCurrentRestaurantId,
+        setShowRestaurantDetails,
     } = props;
 
     const {
@@ -28,7 +30,9 @@ const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
     } = restaurant;
 
     const handleClick = () => {
+        setShowRestaurantDetails(true);
         setCurrentRestaurantId(restaurantId);
+        window.localStorage.setItem('currentRestaurant', JSON.stringify(restaurant)); // TODO 2021/12/17 DOES THIS STILL NEED TO BE DONE?
     };
 
     return (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './MainContent.css';
-import { BoroughSelector, AttributeSelector, Pagination } from '..';
+import { BoroughSelector, AttributeSelector, Pagination, RestaurantDetails } from '..';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import config from '../../config/env';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
@@ -12,6 +12,8 @@ const MainContent = (): JSX.Element => {
 
     const [ fetchedRestaurants, setFetchedRestaurants ] = useState(r);
     const [ searchParam, setSearchParam ] = useState('');
+
+    const currentRestaurant = window.localStorage.getItem('currentRestaurant');
 
     const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any):void => {
         window.localStorage.removeItem('fetchedRestaurantsBySearchParam');

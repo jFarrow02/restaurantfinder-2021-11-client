@@ -7,17 +7,22 @@ interface RestaurantListProps {
     restaurantsList: RestaurantInterface[],
     currentStartIndex: number,
     currentEndIndex: number,
+    currentRestaurantId: string,
+    setCurrentRestaurantId: Function,
+    setShowRestaurantDetails: Function,
 };
 
 const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
     const initialIndices: number[] = [];
 
-    const [ currentRestaurantId, setCurrentRestaurantId ] = useState('');
     const [ indicesList, setIndicesList ] = useState(initialIndices);
     const {
         restaurantsList,
         currentStartIndex,
         currentEndIndex,
+        setShowRestaurantDetails,
+        currentRestaurantId,
+        setCurrentRestaurantId,
     } = props;
 
     useEffect(() => {
@@ -28,12 +33,12 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
         setIndicesList(indices);
     }, [restaurantsList]);
 
-    return(
+    return (
         <section className="RestaurantsList">
             <div className='map'>
                 <Map
                     restaurantsList={restaurantsList}
-                    setCurrentRestaurantId={setCurrentRestaurantId}
+                    clickHandler={setCurrentRestaurantId}
                     indicesList={indicesList}
                 />
             </div>
@@ -47,13 +52,14 @@ const RestaurantsList = (props:RestaurantListProps):JSX.Element => {
                                 currentRestaurantId={currentRestaurantId}
                                 index={indicesList[idx]}
                                 setCurrentRestaurantId={setCurrentRestaurantId}
+                                setShowRestaurantDetails={setShowRestaurantDetails}
                             />
                         );
                     })
                 }
             </div>
         </section>
-    );
+    )
 };
 
 export default RestaurantsList;

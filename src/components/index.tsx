@@ -9,6 +9,7 @@ import RestaurantsList from "./RestaurantsList";
 import Pagination from "./Pagination";
 import AttributeSelectorInput from "./AttributeSelectorInput";
 import Map from "./Map";
+import RestaurantDetails from "./RestaurantDetails";
 
 export {
     Footer,
@@ -22,4 +23,5 @@ export {
     Pagination,
     AttributeSelectorInput,
     Map,
+    RestaurantDetails,
 };
