@@ -1,48 +1,52 @@
+import { useState, useEffect } from 'react';
 import './RestaurantDetails.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { Map } from '../index';
 import { useNavigate } from 'react-router-dom';
 
 interface RestaurantDetailsPropsInterface {
-    restaurant: RestaurantInterface | null,
-    setCurrentRestaurantId: Function,
-    setShowRestaurantDetails: Function,
     indicesList?: number[],
 }
 
-const RestaurantDetails = (props:RestaurantDetailsPropsInterface):JSX.Element => {
+interface RestaurantDetailsStateInterface {
+    restaurant: RestaurantInterface | null,
+}
+
+const initialRestaurant: RestaurantInterface = {
+    name: '',
+    building: '',
+    street: '',
+    zipcode: '',
+    latitude: 0,
+    longitude: 0,
+    cuisine: '',
+    restaurantId: '',
+    borough: '',
+};
+
+const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: RestaurantDetailsStateInterface):JSX.Element => {
     const navigate = useNavigate();
 
+    const [ currentRestaurant, setCurrentRestaurant ] = useState(initialRestaurant);
+
+    useEffect(() => {
+        const restaurant = window.localStorage.getItem('currentRestaurant');
+        if(restaurant){
+            setCurrentRestaurant(JSON.parse(restaurant));
+        }
+    }, []);
+
     const {
-        setCurrentRestaurantId,
-        setShowRestaurantDetails,
         indicesList,
-        restaurant,
     } = props;
 
-    let name, building, street, latitude, longitude, borough, cuisine, restaurantId;
-
-    if(props.restaurant) {
-        const { restaurant } = props;
-        name = restaurant.name;
-        building = restaurant.building;
-        street = restaurant.street;
-        latitude = restaurant.latitude;
-        longitude = restaurant.longitude;
-        borough = restaurant.borough;
-        cuisine = restaurant.cuisine;
-        restaurantId = restaurant.restaurantId;
-    }
-
-    const propsList: RestaurantInterface[] | null = props.restaurant ? [props.restaurant] : null;
+    const restaurantsList: RestaurantInterface[] | null = currentRestaurant ? [currentRestaurant] : null;
 
     const handleClick = () => {
-        // console.log(restaurantId);
     };
 
     const returnToRestaurantResults = () => {
-        setCurrentRestaurantId('');
-        setShowRestaurantDetails(false);
+        window.localStorage.removeItem('currentRestaurant');
         navigate('/restaurants');
     };
 
@@ -54,24 +58,24 @@ const RestaurantDetails = (props:RestaurantDetailsPropsInterface):JSX.Element =>
                 &lt; &lt; Back To Restaurants List
             </button>
             {
-                restaurant && (
+                currentRestaurant.restaurantId !== '' && (
                     <>
                         <Map
                             // @ts-ignore
-                            restaurantsList={propsList}
+                            restaurantsList={restaurantsList}
                             clickHandler={() => {handleClick()}}
                             indicesList={indicesList}
                         />
-                        {name}
-                        {building}
-                        {street}
-                        {borough}
-                        {cuisine}
+                        {currentRestaurant.name}
+                        {currentRestaurant.building}
+                        {currentRestaurant.street}
+                        {currentRestaurant.borough}
+                        {currentRestaurant.cuisine}
                     </>
                 )
             }
             {
-                !restaurant && (
+                currentRestaurant.restaurantId === '' && (
                     <div>No restaurant found</div>
                 )
             }
