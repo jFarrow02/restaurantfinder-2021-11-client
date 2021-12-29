@@ -30,7 +30,7 @@ const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
     } = restaurant;
 
     const handleClick = () => {
-        setShowRestaurantDetails(true);
+        setShowRestaurantDetails(restaurantId);
         setCurrentRestaurantId(restaurantId);
         window.localStorage.setItem('currentRestaurant', JSON.stringify(restaurant)); // TODO 2021/12/17 DOES THIS STILL NEED TO BE DONE?
     };

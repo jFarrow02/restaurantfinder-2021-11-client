@@ -4,7 +4,7 @@ import { Map } from '../index';
 import { useNavigate } from 'react-router-dom';
 
 interface RestaurantDetailsPropsInterface {
-    restaurant: RestaurantInterface,
+    restaurant: RestaurantInterface | null,
     setCurrentRestaurantId: Function,
     setShowRestaurantDetails: Function,
     indicesList?: number[],
@@ -17,22 +17,27 @@ const RestaurantDetails = (props:RestaurantDetailsPropsInterface):JSX.Element =>
         setCurrentRestaurantId,
         setShowRestaurantDetails,
         indicesList,
-        restaurant: {
-            name,
-            building,
-            street,
-            latitude,
-            longitude,
-            borough,
-            cuisine,
-            restaurantId,
-        },
+        restaurant,
     } = props;
 
-    const propsList: RestaurantInterface[] = [props.restaurant];
+    let name, building, street, latitude, longitude, borough, cuisine, restaurantId;
+
+    if(props.restaurant) {
+        const { restaurant } = props;
+        name = restaurant.name;
+        building = restaurant.building;
+        street = restaurant.street;
+        latitude = restaurant.latitude;
+        longitude = restaurant.longitude;
+        borough = restaurant.borough;
+        cuisine = restaurant.cuisine;
+        restaurantId = restaurant.restaurantId;
+    }
+
+    const propsList: RestaurantInterface[] | null = props.restaurant ? [props.restaurant] : null;
 
     const handleClick = () => {
-        console.log(restaurantId);
+        // console.log(restaurantId);
     };
 
     const returnToRestaurantResults = () => {
@@ -48,16 +53,28 @@ const RestaurantDetails = (props:RestaurantDetailsPropsInterface):JSX.Element =>
             > 
                 &lt; &lt; Back To Restaurants List
             </button>
-            <Map
-                restaurantsList={propsList}
-                clickHandler={() => {handleClick()}}
-                indicesList={indicesList}
-            />
-            {name}
-            {building}
-            {street}
-            {borough}
-            {cuisine}
+            {
+                restaurant && (
+                    <>
+                        <Map
+                            // @ts-ignore
+                            restaurantsList={propsList}
+                            clickHandler={() => {handleClick()}}
+                            indicesList={indicesList}
+                        />
+                        {name}
+                        {building}
+                        {street}
+                        {borough}
+                        {cuisine}
+                    </>
+                )
+            }
+            {
+                !restaurant && (
+                    <div>No restaurant found</div>
+                )
+            }
         </article>
     );
 };

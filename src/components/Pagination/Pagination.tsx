@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Pagination.css';
 import config from '../../config/env';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { RestaurantsList, RestaurantDetails } from '../index';
 import { PaginationService } from '../../services';
+
 
 const { ALPHABET, RESULTS_PER_PAGE } = config;
 const initialResultsByPage:RestaurantInterface[] = [];
@@ -32,6 +34,8 @@ const Pagination = ():JSX.Element => {
     let localStorageRestaurantList = window.localStorage.getItem('fetchedRestaurantsBySearchParam');
     let localStorageCurrentPage = window.localStorage.getItem('currentPage');
     let localStorageCurrentPageNumber = window.localStorage.getItem('currentPageNumber');
+
+    const navigate = useNavigate();
 
     // @ts-ignore
     const restaurantsList = JSON.parse(localStorageRestaurantList);
@@ -112,6 +116,10 @@ const Pagination = ():JSX.Element => {
         setCurrentEndIndex(calculateCurrentEndIndex(currentPageNumber, currentResultsByPageLetter, restaurantsList));
     };
 
+    const navigateToRestaurantDetails = (restaurantId:string) => {
+        navigate(`/restaurants/${restaurantId}`);
+    };
+
     const links = ALPHABET.map((char, idx) => {
         return emptyResultsByIndex.indexOf(idx) === -1 ? (
             <button
@@ -137,7 +145,37 @@ const Pagination = ():JSX.Element => {
         </button>);
     };
 
-    return !showRestaurantDetails ? (
+    // return !showRestaurantDetails ? (
+    //     <section className="Pagination">
+    //         {restaurantsList.length > 0 && <h4>Showing results {currentStartIndex + 1} through {currentEndIndex + 1} of {totalResultsLength}</h4>}
+    //         {restaurantsList.length > 0 && links}
+    //         {currentResultsByPageLetter.length > 0 && (
+    //             <RestaurantsList
+    //                 restaurantsList={getCurrentResultsByPageAndNumber(currentResultsByPageLetter, currentPageNumber)}
+    //                 currentStartIndex={currentStartIndex}
+    //                 currentEndIndex={currentEndIndex}
+    //                 //setShowRestaurantDetails={setShowRestaurantDetails}
+    //                 currentRestaurantId={currentRestaurantId}
+    //                 setCurrentRestaurantId={setCurrentRestaurantId}
+    //             />
+    //         )}
+    //         {restaurantsList.length > 0 && numbers}
+    //         {restaurantsList.length < 1 && <h4>No restaurants found</h4>}
+    //     </section>
+    // ) : (
+    //     <RestaurantDetails
+    //         restaurant={currentResultsByPageLetter.filter((r) => r.restaurantId === currentRestaurantId)[0]}
+    //         setCurrentRestaurantId={setCurrentRestaurantId}
+    //         setShowRestaurantDetails={setShowRestaurantDetails}
+    //         indicesList={
+    //             [
+    //                 restaurantsList.indexOf(restaurantsList.filter((r:RestaurantInterface) => r.restaurantId === currentRestaurantId)[0])
+    //             ]
+    //         }
+    //     />
+    // )
+
+    return (
         <section className="Pagination">
             {restaurantsList.length > 0 && <h4>Showing results {currentStartIndex + 1} through {currentEndIndex + 1} of {totalResultsLength}</h4>}
             {restaurantsList.length > 0 && links}
@@ -146,7 +184,7 @@ const Pagination = ():JSX.Element => {
                     restaurantsList={getCurrentResultsByPageAndNumber(currentResultsByPageLetter, currentPageNumber)}
                     currentStartIndex={currentStartIndex}
                     currentEndIndex={currentEndIndex}
-                    setShowRestaurantDetails={setShowRestaurantDetails}
+                    setShowRestaurantDetails={navigateToRestaurantDetails}
                     currentRestaurantId={currentRestaurantId}
                     setCurrentRestaurantId={setCurrentRestaurantId}
                 />
@@ -154,17 +192,6 @@ const Pagination = ():JSX.Element => {
             {restaurantsList.length > 0 && numbers}
             {restaurantsList.length < 1 && <h4>No restaurants found</h4>}
         </section>
-    ) : (
-        <RestaurantDetails
-            restaurant={currentResultsByPageLetter.filter((r) => r.restaurantId === currentRestaurantId)[0]}
-            setCurrentRestaurantId={setCurrentRestaurantId}
-            setShowRestaurantDetails={setShowRestaurantDetails}
-            indicesList={
-                [
-                    restaurantsList.indexOf(restaurantsList.filter((r:RestaurantInterface) => r.restaurantId === currentRestaurantId)[0])
-                ]
-            }
-        />
     )
 };
 

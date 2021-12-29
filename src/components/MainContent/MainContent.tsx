@@ -62,6 +62,25 @@ const MainContent = (): JSX.Element => {
         </>
     );
 
+    const fakeRestaurant:RestaurantInterface = {
+        building: '',
+        street: '', 
+        latitude: 0,
+        longitude: 0,
+        name: '',
+        cuisine: '',
+        zipcode: '',
+        borough: '',
+        restaurantId: ''
+    };
+
+    const restaurantRoute = currentRestaurant ? (
+        <Route 
+            path='restaurants/:id' 
+            element={<RestaurantDetails restaurant={JSON.parse(currentRestaurant)} setShowRestaurantDetails={()=> {}} setCurrentRestaurantId={() => {}}/>}/>
+        ) :
+        <Route path='restaurants/:id' element={<RestaurantDetails restaurant={fakeRestaurant} setShowRestaurantDetails={()=> {}} setCurrentRestaurantId={() => {}}/>}/>;
+
     return (
         <BrowserRouter>
             <section className="MainContent">
@@ -70,7 +89,7 @@ const MainContent = (): JSX.Element => {
                 <Routes>
                     <Route path='/' element={selectorGroup}/>
                     <Route path='restaurants' element={<Pagination/>}/>
-                    <Route path='*' element={selectorGroup}/>
+                    {restaurantRoute}
                 </Routes>
                 <Outlet/>
             </section>
