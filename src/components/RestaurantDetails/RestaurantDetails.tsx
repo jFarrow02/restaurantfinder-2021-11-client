@@ -52,33 +52,34 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
 
     return (
         <article className='RestaurantDetails'>
-            <button
-                onClick={() => {returnToRestaurantResults();}}
-            > 
-                &lt; &lt; Back To Restaurants List
-            </button>
-            {
-                currentRestaurant.restaurantId !== '' && (
-                    <>
+            <div className='map-container'>
+                {
+                    currentRestaurant.restaurantId !== '' && (
                         <Map
                             // @ts-ignore
                             restaurantsList={restaurantsList}
                             clickHandler={() => {handleClick()}}
                             indicesList={indicesList}
                         />
-                        {currentRestaurant.name}
-                        {currentRestaurant.building}
-                        {currentRestaurant.street}
-                        {currentRestaurant.borough}
-                        {currentRestaurant.cuisine}
-                    </>
-                )
-            }
-            {
-                currentRestaurant.restaurantId === '' && (
-                    <div>No restaurant found</div>
-                )
-            }
+                    )
+                }
+                {
+                    currentRestaurant.restaurantId === '' && (
+                        <div>No restaurant found</div>
+                    )
+                }
+            </div>
+            <div className='details-container'>
+                <h2 className='details-container-header'>{currentRestaurant.name}</h2>
+                <h3 className='details-container-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
+                <i>{currentRestaurant.borough}, NY</i>
+                <p>Cuisine: {currentRestaurant.cuisine}</p>
+                <button
+                    onClick={() => {returnToRestaurantResults();}}
+                > 
+                    &lt; &lt; Back To Restaurants List
+                </button>
+            </div>
         </article>
     );
 };
