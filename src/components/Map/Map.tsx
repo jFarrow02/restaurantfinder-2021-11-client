@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import './Map.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
-import { Loader } from '@googlemaps/js-api-loader';
+import { GoogleMapsLoaderService } from '../../services';
 
 interface MapPropsInterface {
     restaurantsList: RestaurantInterface[],
@@ -16,12 +16,6 @@ const Map = (props: MapPropsInterface):JSX.Element => {
         indicesList,
     } = props;
 
-    const loader = new Loader(
-        {
-            apiKey: 'AIzaSyDsSzKbTxHePBhulyqZNaAlWMNbgoKeMd4',
-        }
-    );
-
     const mapOptions = {
         center: {
             lat: props.restaurantsList[Math.floor(restaurantsList.length / 2)].latitude,
@@ -33,7 +27,7 @@ const Map = (props: MapPropsInterface):JSX.Element => {
 
     const drawMap = async () => {
         try {
-            const google = await loader.load();
+            const google = await GoogleMapsLoaderService.getLoader();
             const map = new google.maps.Map(document.getElementById('restaurants-map'), mapOptions);
 
             // Position markers for each restaurant

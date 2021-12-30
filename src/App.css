@@ -9,3 +9,7 @@
     "s c c c c c c c c c c c c" /*2-column sidebar, 10-column content*/
     "f f f f f f f f f f f f f" /*12-column footer*/; 
 }
+
+.app-content {
+  position: relative;
+}

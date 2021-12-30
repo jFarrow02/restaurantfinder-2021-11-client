@@ -10,6 +10,7 @@ import Pagination from "./Pagination";
 import AttributeSelectorInput from "./AttributeSelectorInput";
 import Map from "./Map";
 import RestaurantDetails from "./RestaurantDetails";
+import Modal from "./Modal";
 
 export {
     Footer,
@@ -24,4 +25,5 @@ export {
     AttributeSelectorInput,
     Map,
     RestaurantDetails,
+    Modal,
 };

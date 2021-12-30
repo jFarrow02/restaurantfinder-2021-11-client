@@ -3,6 +3,8 @@ import './RestaurantDetails.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import { Map } from '../index';
 import { useNavigate } from 'react-router-dom';
+import { DirectionsRequestInterface } from '../../models/DirectionsRequestInterface';
+import { GoogleMapsLoaderService } from '../../services/googleMapsLoaderService';
 
 interface RestaurantDetailsPropsInterface {
     indicesList?: number[],
@@ -24,10 +26,18 @@ const initialRestaurant: RestaurantInterface = {
     borough: '',
 };
 
+const travelModes = [
+    'DRIVING',
+    'TRANSIT',
+    'BICYCLING',
+    'WALKING',
+];
+
 const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: RestaurantDetailsStateInterface):JSX.Element => {
     const navigate = useNavigate();
 
     const [ currentRestaurant, setCurrentRestaurant ] = useState(initialRestaurant);
+    const [ currentRestaurantReviews, setCurrentRestaurantReviews ] = useState([]);
 
     useEffect(() => {
         const restaurant = window.localStorage.getItem('currentRestaurant');
@@ -50,9 +60,28 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
         navigate('/restaurants');
     };
 
+    const getDirectionsForTravelMode = async (mode:string) => {
+        const google = await GoogleMapsLoaderService.getLoader()
+    
+        const directionsService = new google.maps.DirectionsService();
+        const request:DirectionsRequestInterface = {
+            origin: 'Chicago, IL',
+            destination: new google.maps.LatLng(currentRestaurant.latitude, currentRestaurant.longitude),
+            travelMode: 'DRIVING',
+        };
+        directionsService.route(request, (result:any, status:any) => {
+            console.log(result);
+            console.log(status);
+        });
+    };
+
+    const reviews = currentRestaurantReviews.length > 0 ? currentRestaurantReviews.map((review, idx) => <div key={`review-${idx}`}>Review {idx}</div>)
+        : (
+            <div>No reviews yet</div>
+        )
     return (
         <article className='RestaurantDetails'>
-            <div className='map-container'>
+            <section className='map-container'>
                 {
                     currentRestaurant.restaurantId !== '' && (
                         <Map
@@ -68,18 +97,40 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
                         <div>No restaurant found</div>
                     )
                 }
-            </div>
-            <div className='details-container'>
-                <h2 className='details-container-header'>{currentRestaurant.name}</h2>
-                <h3 className='details-container-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
-                <i>{currentRestaurant.borough}, NY</i>
+            </section>
+            <section className='details-container'>
+                <h2 className='details-header'>{currentRestaurant.name}</h2>
+                <h3 className='details-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
+                <p>{currentRestaurant.borough}, NY</p>
                 <p>Cuisine: {currentRestaurant.cuisine}</p>
+                <div className='details-avg-grade'>Average Grade:</div>
+                <div className='details-reviews'>
+                    <p>Reviews: </p>
+                    {reviews}
+                </div>
+                <section className='details-directions'>
+                    <h4>Get Directions</h4>
+                    {
+                        
+                            travelModes.map((mode, idx) => {
+                                return(
+                                    <button
+                                        key={`travel-mode-${idx}`}
+                                        onClick={() => {getDirectionsForTravelMode(mode)}}
+                                    >
+                                        {mode}
+                                    </button>
+                                );
+                            })
+                        
+                    }
+                </section>
                 <button
                     onClick={() => {returnToRestaurantResults();}}
                 > 
                     &lt; &lt; Back To Restaurants List
                 </button>
-            </div>
+            </section>
         </article>
     );
 };

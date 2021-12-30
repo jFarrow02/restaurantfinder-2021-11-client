@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import './App.css';
-import { Footer, Header, MainContent, Sidebar} from './components';
+import { Footer, Header, MainContent, Sidebar, Modal} from './components';
 
 function App():JSX.Element {
   
+  const [ displayModal, setDisplayModal ] = useState(false);
+
   return (
     <div className="App">
-        <Header/>
-        <Sidebar/>
-        <MainContent/>
-        <Footer/>
+      { displayModal && <Modal></Modal>}
+      <Header/>
+      <Sidebar/>
+      <MainContent/>
+      <Footer/>
     </div>
   );
 }
