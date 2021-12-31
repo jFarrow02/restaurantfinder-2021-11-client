@@ -1,15 +1,21 @@
 import { useEffect } from 'react';
 import './Map.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
-import { GoogleMapsLoaderService } from '../../services';
+import { DirectionsRequestInterface } from '../../models/DirectionsRequestInterface';
+import { GoogleMapsLoaderService } from '../../services/googleMapsLoaderService';
 
 interface MapPropsInterface {
     restaurantsList: RestaurantInterface[],
     clickHandler: Function,
     indicesList?: number[],
+    request?: DirectionsRequestInterface,
+    // googleService: any,
+    // directionsService?: any,
+    // directionsRenderer?: any,
 }
 
 const Map = (props: MapPropsInterface):JSX.Element => {
+
     const {
         restaurantsList,
         clickHandler,
@@ -25,10 +31,13 @@ const Map = (props: MapPropsInterface):JSX.Element => {
         mapTypeId: 'roadmap',
     };
 
+    
     const drawMap = async () => {
         try {
             const google = await GoogleMapsLoaderService.getLoader();
             const map = new google.maps.Map(document.getElementById('restaurants-map'), mapOptions);
+            let directionsService;
+            let directionsRenderer:any;
 
             // Position markers for each restaurant
             for(let i = 0; i < restaurantsList.length; i++) {
@@ -74,6 +83,24 @@ const Map = (props: MapPropsInterface):JSX.Element => {
                 });
             }
 
+            if(props.request && props.request.origin.latitude !== 0 && props.request.origin.longitude !== 0) {
+                directionsService = new google.maps.DirectionsService();
+                directionsRenderer = new google.maps.DirectionsRenderer();
+                directionsRenderer.setMap(map);
+                const { request: { origin, destination, travelMode } } = props;
+                const o = new google.maps.LatLng(origin.latitude, origin.longitude);
+                const d = new google.maps.LatLng(destination.latitude, destination.longitude);
+
+                directionsService.route({ origin: o, destination: d, travelMode }, (result:any, status:any) => {
+                    console.log(status);
+                    console.log(result);
+                    if(status === 'OK') {
+                        directionsRenderer.setDirections(result);
+                    } else {
+                        
+                    }
+                })
+            }
         } catch(err:any) {
             throw err;
         }

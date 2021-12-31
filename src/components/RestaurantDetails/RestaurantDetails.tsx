@@ -26,6 +26,11 @@ const initialRestaurant: RestaurantInterface = {
     borough: '',
 };
 
+const initialDirectionsRequest:DirectionsRequestInterface = {
+    origin: { latitude: 0, longitude: 0},
+    destination: { latitude: 0, longitude: 0},
+    travelMode: '',
+}
 const travelModes = [
     'DRIVING',
     'TRANSIT',
@@ -38,6 +43,7 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
 
     const [ currentRestaurant, setCurrentRestaurant ] = useState(initialRestaurant);
     const [ currentRestaurantReviews, setCurrentRestaurantReviews ] = useState([]);
+    const [ currentDirectionsRequest, setCurrentDirectionsRequest ] = useState(initialDirectionsRequest);
 
     useEffect(() => {
         const restaurant = window.localStorage.getItem('currentRestaurant');
@@ -60,20 +66,11 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
         navigate('/restaurants');
     };
 
-    const getDirectionsForTravelMode = async (mode:string) => {
-        const google = await GoogleMapsLoaderService.getLoader()
-    
-        const directionsService = new google.maps.DirectionsService();
-        const request:DirectionsRequestInterface = {
-            origin: 'Chicago, IL',
-            destination: new google.maps.LatLng(currentRestaurant.latitude, currentRestaurant.longitude),
-            travelMode: 'DRIVING',
-        };
-        directionsService.route(request, (result:any, status:any) => {
-            console.log(result);
-            console.log(status);
-        });
-    };
+    const fakeRequest = {
+        origin: { latitude: 41.850033, longitude: -87.6500523 },
+        destination: { latitude: currentRestaurant.latitude, longitude: currentRestaurant.longitude },
+        travelMode: travelModes[0],
+    }
 
     const reviews = currentRestaurantReviews.length > 0 ? currentRestaurantReviews.map((review, idx) => <div key={`review-${idx}`}>Review {idx}</div>)
         : (
@@ -89,6 +86,7 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
                             restaurantsList={restaurantsList}
                             clickHandler={() => {handleClick()}}
                             indicesList={indicesList}
+                            request={currentDirectionsRequest}
                         />
                     )
                 }
@@ -101,11 +99,11 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
             <section className='details-container'>
                 <h2 className='details-header'>{currentRestaurant.name}</h2>
                 <h3 className='details-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
-                <p>{currentRestaurant.borough}, NY</p>
+                <p>{currentRestaurant.borough}, NY {currentRestaurant.zipcode}</p>
                 <p>Cuisine: {currentRestaurant.cuisine}</p>
                 <div className='details-avg-grade'>Average Grade:</div>
                 <div className='details-reviews'>
-                    <p>Reviews: </p>
+                    <p>Reviews:</p> 
                     {reviews}
                 </div>
                 <section className='details-directions'>
@@ -116,7 +114,7 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
                                 return(
                                     <button
                                         key={`travel-mode-${idx}`}
-                                        onClick={() => {getDirectionsForTravelMode(mode)}}
+                                        onClick={() => {setCurrentDirectionsRequest(fakeRequest)}}
                                     >
                                         {mode}
                                     </button>

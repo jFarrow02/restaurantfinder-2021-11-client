@@ -4,7 +4,7 @@ export interface LatLngInterface {
 }
 
 export interface DirectionsRequestInterface {
-    origin: LatLngInterface | string,
-    destination: LatLngInterface | string,
+    origin: LatLngInterface,
+    destination: LatLngInterface,
     travelMode: string,
 }
