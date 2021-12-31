@@ -1,7 +1,6 @@
 import CuisineTypeInterface from "../models/CuisineTypeInterface"
 import { HttpUtilsService } from ".";
 import config from '../config/env';
-import ErrorResponseInterface from "../models/ErrorResponseInterface";
 
 const { 
     API_URL,

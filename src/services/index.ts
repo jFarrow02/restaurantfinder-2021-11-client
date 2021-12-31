@@ -5,6 +5,7 @@ import HttpUtilsService from "./httpUtilsService";
 import ZipcodeService from "./zipcodeService";
 import PaginationService from "./paginationService";
 import GoogleMapsLoaderService from "./googleMapsLoaderService";
+import ReviewService from "./reviewService";
 
 export {
     CuisineService,
@@ -14,4 +15,5 @@ export {
     ZipcodeService,
     PaginationService,
     GoogleMapsLoaderService,
+    ReviewService,
 };
