@@ -26,7 +26,8 @@ const RestaurantCard = (props:RestaurantCardPropsInterface):JSX.Element => {
         latitude,
         longitude,
         name,
-        restaurantId
+        restaurantId,
+        phone,
     } = restaurant;
 
     const handleClick = () => {

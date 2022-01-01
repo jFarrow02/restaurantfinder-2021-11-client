@@ -5,4 +5,5 @@ export default interface ReviewInterface {
     reviewer: string,
     reviewDate: number,
     reviewId: string,
+    upvotes: number,
 }

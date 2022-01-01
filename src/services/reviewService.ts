@@ -30,7 +30,31 @@ const ReviewService = {
             }
         );
         return await HttpUtilsService.handleFetchResponse(created);
-    } 
+    },
+
+    findMostRecentReviewIndexAndMostHelpfulIndex(reviews:ReviewInterface[]):any{
+        let mostRecentDate = reviews[0].reviewDate;
+        let mostRecentIndex = 0;
+        let mostHelpfulIndex = 0;
+        let mostUpvotes = reviews[0].upvotes;
+
+        for(let i = 0; i < reviews.length; i++) {
+            for(let j = 0; j < reviews.length; j++) {
+                if(reviews[j].reviewDate > mostRecentDate) {
+                    mostRecentDate = reviews[i].reviewDate;
+                    mostRecentIndex = j;
+                }
+                if(reviews[j].upvotes > mostUpvotes) {
+                    mostHelpfulIndex = j;
+                    mostUpvotes = reviews[j].upvotes;
+                }
+            }
+        }
+        return {
+            mostRecentIndex,
+            mostHelpfulIndex,
+        }
+    }
 };
 
 export default ReviewService;

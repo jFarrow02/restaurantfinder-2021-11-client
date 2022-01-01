@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './MainContent.css';
-import { BoroughSelector, AttributeSelector, Pagination, RestaurantDetails, ReviewsList } from '..';
+import { BoroughSelector, AttributeSelector, Pagination, RestaurantDetails } from '..';
 import RestaurantInterface from '../../models/RestaurantInterface';
 import ReviewsInterface from '../../models/ReviewInterface';
 import config from '../../config/env';
@@ -73,8 +73,7 @@ const MainContent = (): JSX.Element => {
                 <Routes>
                     <Route path='/' element={selectorGroup}/>
                     <Route path='restaurants' element={<Pagination unsetCurentRestaurantReviews={setCurrentRestaurantReviews}/>}/>
-                    <Route path='restaurants/:id' element={<RestaurantDetails setRestaurantReviews={setCurrentRestaurantReviews}/>}/>
-                    <Route path='reviews/:restaurantId' element={<ReviewsList reviews={currentRestaurantReviews}/>}/>
+                    <Route path='restaurants/:id' element={<RestaurantDetails setRestaurantReviews={setCurrentRestaurantReviews} reviews={currentRestaurantReviews}/>}/>
                 </Routes>
                 <Outlet/>
             </section>

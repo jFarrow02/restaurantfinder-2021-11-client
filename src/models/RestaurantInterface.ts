@@ -8,4 +8,5 @@ export default interface RestaurantInterface {
     cuisine: string,
     name: string,
     restaurantId: string,
+    phone: string,
 }

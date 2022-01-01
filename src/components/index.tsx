@@ -12,6 +12,7 @@ import Map from "./Map";
 import RestaurantDetails from "./RestaurantDetails";
 import Modal from "./Modal";
 import ReviewsList from "./ReviewsList";
+import Review from './Review';
 
 export {
     Footer,
@@ -28,4 +29,5 @@ export {
     RestaurantDetails,
     Modal,
     ReviewsList,
+    Review,
 };

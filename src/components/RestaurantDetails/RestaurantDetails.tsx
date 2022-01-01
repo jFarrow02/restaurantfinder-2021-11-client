@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import './RestaurantDetails.css';
 import RestaurantInterface from '../../models/RestaurantInterface';
-import { Map } from '../index';
+import { Map, ReviewsList } from '../index';
 import { useNavigate } from 'react-router-dom';
 import { DirectionsRequestInterface } from '../../models/DirectionsRequestInterface';
+import ReviewInterface from '../../models/ReviewInterface';
 import { ReviewService } from '../../services';
 
 interface RestaurantDetailsPropsInterface {
     indicesList?: number[],
     setRestaurantReviews: Function,
+    reviews: ReviewInterface[],
 }
 
 interface RestaurantDetailsStateInterface {
@@ -25,6 +27,7 @@ const initialRestaurant: RestaurantInterface = {
     cuisine: '',
     restaurantId: '',
     borough: '',
+    phone: '',
 };
 
 const initialDirectionsRequest:DirectionsRequestInterface = {
@@ -43,9 +46,13 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
     const navigate = useNavigate();
 
     const [ currentRestaurant, setCurrentRestaurant ] = useState(initialRestaurant);
-    const [ currentRestaurantReviews, setCurrentRestaurantReviews ] = useState([]);
     const [ currentDirectionsRequest, setCurrentDirectionsRequest ] = useState(initialDirectionsRequest);
     const [ showErrorHandling, setShowErrorHandling ] = useState(false);
+
+    const {
+        indicesList,
+        setRestaurantReviews,
+    } = props;
 
     const fetchReviewsForCurrentRestaurant = async (restaurantId: string) => {
         try{
@@ -57,11 +64,6 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
         }
         
     };
-
-    const {
-        indicesList,
-        setRestaurantReviews,
-    } = props;
 
     useEffect(() => {
         const restaurant = window.localStorage.getItem('currentRestaurant');
@@ -80,8 +82,6 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
 
     const returnToRestaurantResults = () => {
         window.localStorage.removeItem('currentRestaurant');
-        window.localStorage.removeItem('currentRestaurantReviews');
-        setCurrentRestaurantReviews([]);
         navigate('/restaurants');
     };
 
@@ -91,22 +91,48 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
         travelMode: travelModes[0],
     }
 
-    const reviews = currentRestaurantReviews.length > 0 ? currentRestaurantReviews.map((review, idx) => <div key={`review-${idx}`}>Review {idx}</div>)
-        : (
-            <div>No reviews yet</div>
-        )
     return !showErrorHandling ? (
         <article className='RestaurantDetails'>
+            <section className='details-container'>
+                <h2 className='details-header'>{currentRestaurant.name}</h2>
+                <h3 className='details-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
+                <p>{currentRestaurant.borough}, NY {currentRestaurant.zipcode}</p>
+                <p>Phone: {currentRestaurant.phone}</p>
+                <p>Cuisine: {currentRestaurant.cuisine}</p>
+                <div className='details-avg-grade'>Average Grade:</div>
+                <button
+                    onClick={() => {returnToRestaurantResults()}}
+                > 
+                    &lt; &lt; Back To Restaurants List
+                </button>
+            </section>
             <section className='map-container'>
                 {
                     currentRestaurant.restaurantId !== '' && (
-                        <Map
-                            // @ts-ignore
-                            restaurantsList={restaurantsList}
-                            clickHandler={() => {handleClick()}}
-                            indicesList={indicesList}
-                            request={currentDirectionsRequest}
-                        />
+                        <>
+                            <h3>Map</h3>
+                            {
+
+                                    travelModes.map((mode, idx) => {
+                                        return(
+                                            <button
+                                                key={`travel-mode-${idx}`}
+                                                onClick={() => {setCurrentDirectionsRequest(fakeRequest)}}
+                                            >
+                                                {mode}
+                                            </button>
+                                        );
+                                    })
+                                
+                            }
+                            <Map
+                                // @ts-ignore
+                                restaurantsList={restaurantsList}
+                                clickHandler={() => {handleClick()}}
+                                indicesList={indicesList}
+                                request={currentDirectionsRequest}
+                            />
+                        </>
                     )
                 }
                 {
@@ -115,38 +141,9 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
                     )
                 }
             </section>
-            <section className='details-container'>
-                <h2 className='details-header'>{currentRestaurant.name}</h2>
-                <h3 className='details-address'>{currentRestaurant.building} {currentRestaurant.street}</h3>
-                <p>{currentRestaurant.borough}, NY {currentRestaurant.zipcode}</p>
-                <p>Cuisine: {currentRestaurant.cuisine}</p>
-                <div className='details-avg-grade'>Average Grade:</div>
-                <div className='details-reviews'>
-                    <p>Reviews:</p> 
-                    {reviews}
-                </div>
-                <section className='details-directions'>
-                    <h4>Get Directions</h4>
-                    {
-                        
-                            travelModes.map((mode, idx) => {
-                                return(
-                                    <button
-                                        key={`travel-mode-${idx}`}
-                                        onClick={() => {setCurrentDirectionsRequest(fakeRequest)}}
-                                    >
-                                        {mode}
-                                    </button>
-                                );
-                            })
-                        
-                    }
-                </section>
-                <button
-                    onClick={() => {returnToRestaurantResults()}}
-                > 
-                    &lt; &lt; Back To Restaurants List
-                </button>
+            <section className='details-reviews'>
+                <h3>Reviews</h3>
+                <ReviewsList currentRestaurant={currentRestaurant}/>
             </section>
         </article>
     ) : (

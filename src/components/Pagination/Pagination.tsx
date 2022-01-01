@@ -8,8 +8,6 @@ import { PaginationService } from '../../services';
 
 
 const { ALPHABET, RESULTS_PER_PAGE } = config;
-const initialResultsByPage:RestaurantInterface[] = [];
-const initialEmptyIndices:number[] = [];
 
 const {
     getCurrentResultsByPageLetter,
@@ -26,8 +24,8 @@ const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     const [ currentPage, setCurrentPage ] = useState('a');
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
-    const [ emptyResultsByIndex, setEmptyResultsByIndex ] = useState(initialEmptyIndices);
-    const [ currentResultsByPageLetter, setCurrentResultsByPageLetter ] = useState(initialResultsByPage);
+    const [ emptyResultsByIndex, setEmptyResultsByIndex ] = useState<number[]>([]);
+    const [ currentResultsByPageLetter, setCurrentResultsByPageLetter ] = useState<RestaurantInterface[]>([]);
     const [ currentResultsByPageLetterLength, setCurrentResultsByPageLetterLength ] = useState(0);
     const [ totalResultsLength, setTotalResultsLength ] = useState(0);
     const [ currentStartIndex, setCurrentStartIndex ] = useState(0);
