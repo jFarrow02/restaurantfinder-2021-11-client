@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './MainContent.css';
-import { BoroughSelector, AttributeSelector, Pagination, RestaurantDetails } from '..';
+import { BoroughSelector, AttributeSelector, Pagination, RestaurantDetails, ReviewsList } from '..';
 import RestaurantInterface from '../../models/RestaurantInterface';
+import ReviewsInterface from '../../models/ReviewInterface';
 import config from '../../config/env';
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
 
@@ -9,11 +10,11 @@ const { ALPHABET } = config;
 
 const MainContent = (): JSX.Element => {
     let r: RestaurantInterface[] = [];
+    let initReviews: ReviewsInterface[] = [];
 
     const [ fetchedRestaurants, setFetchedRestaurants ] = useState(r);
     const [ searchParam, setSearchParam ] = useState('');
-
-    const currentRestaurant = window.localStorage.getItem('currentRestaurant');
+    const [ currentRestaurantReviews, setCurrentRestaurantReviews ] = useState(initReviews);
 
     const fetchRestaurantsBySearchParam = (searchBy: string, searchValue: string, restaurants: any):void => {
         window.localStorage.removeItem('fetchedRestaurantsBySearchParam');
@@ -54,10 +55,12 @@ const MainContent = (): JSX.Element => {
         <>
             <BoroughSelector
                 fetchRestaurantsByBorough={fetchRestaurantsBySearchParam}
+                unsetCurentRestaurantReviews={setCurrentRestaurantReviews}
             />
             <div className="divider">OR</div>
             <AttributeSelector
                 fetchRestaurantsBySearchParam={fetchRestaurantsBySearchParam}
+                unsetCurentRestaurantReviews={setCurrentRestaurantReviews}
             />
         </>
     );
@@ -69,8 +72,9 @@ const MainContent = (): JSX.Element => {
             <Link to='/restaurants'>Restaurants</Link>
                 <Routes>
                     <Route path='/' element={selectorGroup}/>
-                    <Route path='restaurants' element={<Pagination/>}/>
-                    <Route path='restaurants/:id' element={<RestaurantDetails/>}/>
+                    <Route path='restaurants' element={<Pagination unsetCurentRestaurantReviews={setCurrentRestaurantReviews}/>}/>
+                    <Route path='restaurants/:id' element={<RestaurantDetails setRestaurantReviews={setCurrentRestaurantReviews}/>}/>
+                    <Route path='reviews/:restaurantId' element={<ReviewsList reviews={currentRestaurantReviews}/>}/>
                 </Routes>
                 <Outlet/>
             </section>

@@ -18,7 +18,11 @@ const {
     calculateCurrentEndIndex,
 } = PaginationService;
 
-const Pagination = ():JSX.Element => {
+interface PaginationPropsInterface {
+    unsetCurentRestaurantReviews: Function,
+}
+
+const Pagination = (props:PaginationPropsInterface):JSX.Element => {
 
     const [ currentPage, setCurrentPage ] = useState('a');
     const [ currentPageNumber, setCurrentPageNumber ] = useState(1);
@@ -82,6 +86,7 @@ const Pagination = ():JSX.Element => {
             setEmptyResultsByIndex(emptyIndices);
         });
 
+        props.unsetCurentRestaurantReviews([]);
         setCurrentStartIndex(calculateCurrentStartIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter), restaurantsList));
         setCurrentEndIndex(calculateCurrentEndIndex(pageNumber, getCurrentResultsByPageLetter(restaurantsList, pageLetter), restaurantsList));
     }, [

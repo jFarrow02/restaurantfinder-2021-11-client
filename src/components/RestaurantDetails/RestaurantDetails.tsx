@@ -4,10 +4,11 @@ import RestaurantInterface from '../../models/RestaurantInterface';
 import { Map } from '../index';
 import { useNavigate } from 'react-router-dom';
 import { DirectionsRequestInterface } from '../../models/DirectionsRequestInterface';
-import { GoogleMapsLoaderService } from '../../services/googleMapsLoaderService';
+import { ReviewService } from '../../services';
 
 interface RestaurantDetailsPropsInterface {
     indicesList?: number[],
+    setRestaurantReviews: Function,
 }
 
 interface RestaurantDetailsStateInterface {
@@ -44,17 +45,33 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
     const [ currentRestaurant, setCurrentRestaurant ] = useState(initialRestaurant);
     const [ currentRestaurantReviews, setCurrentRestaurantReviews ] = useState([]);
     const [ currentDirectionsRequest, setCurrentDirectionsRequest ] = useState(initialDirectionsRequest);
+    const [ showErrorHandling, setShowErrorHandling ] = useState(false);
+
+    const fetchReviewsForCurrentRestaurant = async (restaurantId: string) => {
+        try{
+            const reviews = await ReviewService.getReviewsByRestaurantId(restaurantId);
+            setRestaurantReviews(reviews);
+        } catch(err) {
+            console.log(err);
+            setShowErrorHandling(true);
+        }
+        
+    };
+
+    const {
+        indicesList,
+        setRestaurantReviews,
+    } = props;
 
     useEffect(() => {
         const restaurant = window.localStorage.getItem('currentRestaurant');
         if(restaurant){
             setCurrentRestaurant(JSON.parse(restaurant));
         }
+       
+        //@ts-ignore
+        fetchReviewsForCurrentRestaurant(JSON.parse(restaurant).restaurantId);
     }, []);
-
-    const {
-        indicesList,
-    } = props;
 
     const restaurantsList: RestaurantInterface[] | null = currentRestaurant ? [currentRestaurant] : null;
 
@@ -63,6 +80,8 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
 
     const returnToRestaurantResults = () => {
         window.localStorage.removeItem('currentRestaurant');
+        window.localStorage.removeItem('currentRestaurantReviews');
+        setCurrentRestaurantReviews([]);
         navigate('/restaurants');
     };
 
@@ -76,7 +95,7 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
         : (
             <div>No reviews yet</div>
         )
-    return (
+    return !showErrorHandling ? (
         <article className='RestaurantDetails'>
             <section className='map-container'>
                 {
@@ -124,12 +143,14 @@ const RestaurantDetails = (props: RestaurantDetailsPropsInterface, state: Restau
                     }
                 </section>
                 <button
-                    onClick={() => {returnToRestaurantResults();}}
+                    onClick={() => {returnToRestaurantResults()}}
                 > 
                     &lt; &lt; Back To Restaurants List
                 </button>
             </section>
         </article>
+    ) : (
+        <div>Error</div>
     );
 };
 

@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface AttributeSelectorPropsInterface {
     fetchRestaurantsBySearchParam: Function,
+    unsetCurentRestaurantReviews: Function,
 }
 
 const { SEARCH_PARAMS, AVG_GRADES } = config;
@@ -35,6 +36,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
 
     const {
         fetchRestaurantsBySearchParam,
+        unsetCurentRestaurantReviews,
     } = props;
 
     const fetchSearchParameters = async():Promise<void> => {
@@ -86,6 +88,7 @@ const AttributeSelector = (props:AttributeSelectorPropsInterface):JSX.Element =>
 
     useEffect(() => {
         fetchSearchParameters();
+        unsetCurentRestaurantReviews();
     }, []);
 
     const buildOptionsList = (searchParameter:string):any[] => {

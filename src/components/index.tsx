@@ -11,6 +11,7 @@ import AttributeSelectorInput from "./AttributeSelectorInput";
 import Map from "./Map";
 import RestaurantDetails from "./RestaurantDetails";
 import Modal from "./Modal";
+import ReviewsList from "./ReviewsList";
 
 export {
     Footer,
@@ -26,4 +27,5 @@ export {
     Map,
     RestaurantDetails,
     Modal,
+    ReviewsList,
 };

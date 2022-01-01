@@ -1,14 +1,26 @@
+import { useEffect } from 'react';
 import './BoroughSelector.css';
 import config from '../../config/env';
 import RestaurantService from '../../services/restaurantService';
 import { useNavigate } from 'react-router-dom';
 
-const BoroughSelector = (props: any):JSX.Element => {
+interface BoroughSelectorPropsInterface {
+    fetchRestaurantsByBorough: Function,
+    unsetCurentRestaurantReviews: Function,
+}
+
+const BoroughSelector = (props: BoroughSelectorPropsInterface):JSX.Element => {
 
     const { BOROUGHS } = config;
     const {
         fetchRestaurantsByBorough,
+        unsetCurentRestaurantReviews,
     } = props;
+
+    useEffect(() => {
+        unsetCurentRestaurantReviews([]);
+    }, []);
+
     const navigate = useNavigate();
 
     const fetchRestaurants = async(borough: string) => {
