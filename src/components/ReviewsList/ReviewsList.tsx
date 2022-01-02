@@ -18,6 +18,9 @@ const ReviewsList = (props:ReviewsListPropsInterface) => {
     const [ reviewList, setReviewList ] = useState<ReviewInterface[]>([]);
     const [ mostRecentIdx, setMostRecentIdx ] = useState(0);
     const [ mostHelpfulIdx, setMostHelpfulIdx ] = useState(0);
+    const [ opacityMaskWidth, setOpacityMaskWidth ] = useState('100vw');
+    const [ opacityMaskHeight, setOpacityMaskHeight ] = useState('100%');
+    const [ showAllReviews, setShowAllReviews ] = useState(false);
 
     const fetchReviewsForRestaurant = async () => {
         const id = currentRestaurant.restaurantId || '0';
@@ -44,6 +47,22 @@ const ReviewsList = (props:ReviewsListPropsInterface) => {
         );
     });
 
+    const getReviewContainerHeight = () => {
+        const container = showAllReviews ? document.getElementsByClassName('Review')[0] : document.getElementsByClassName('reviews-container')[0];
+        const rect = container.getBoundingClientRect();
+        const height = showAllReviews ? rect.height : 300;
+        console.log(height);
+        setOpacityMaskHeight(height + 'px');
+    };
+
+    window.addEventListener('resize', (e) => {
+        setOpacityMaskWidth(window.innerWidth + 'px');
+    });
+
+    const displayReviews = () => {
+        setShowAllReviews(!showAllReviews);
+        getReviewContainerHeight();
+    }
     return (
         <article className='ReviewsList'>
             <div className='notable-reviews-container'>
@@ -56,9 +75,26 @@ const ReviewsList = (props:ReviewsListPropsInterface) => {
                     {reviewList[mostHelpfulIdx] && <Review review={reviewList[mostHelpfulIdx]}/>}
                 </section>
             </div>
-            <p>{reviewList.length} total reviews. <a href='/'>See all reviews</a></p> 
-            <div className='reviews-container'>
-                {reviewCards}
+            <p>{reviewList.length} total reviews. <button onClick={() => {displayReviews()}}>{!showAllReviews ? 'Hide Reviews' : 'Show All Reviews'}</button></p> 
+            <div className='reviews-container' style={
+                { 
+                    height: opacityMaskHeight,
+                }
+                }>
+                <div id='review-cards' style={{ height: opacityMaskHeight }}>
+                    {reviewCards}
+                </div>
+                <div 
+                    id='opacity-mask'
+                    style={
+                        {
+                            width: opacityMaskWidth,
+                            height: opacityMaskHeight,
+                            visibility: !showAllReviews ? 'hidden' : 'visible'
+                            }
+                        }
+                >
+                </div>   
             </div>
         </article>
     );
